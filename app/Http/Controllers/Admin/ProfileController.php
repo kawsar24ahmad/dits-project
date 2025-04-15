@@ -53,7 +53,7 @@ class ProfileController extends Controller
 
         if ($request->hasFile('avatar')) {
             // Delete old photo if exists
-            if ($user->avatar) {
+            if ($user->avatar && file_exists($user->avatar)) {
                 unlink(public_path($user->avatar));
             }
 

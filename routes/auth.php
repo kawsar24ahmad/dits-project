@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -87,6 +88,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', function () {
                 return view('admin.dashboard');
             })->name('admin.dashboard');
+            Route::resource('admin_users', AdminUserController::class);
             Route::get('/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
             Route::patch('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
             Route::patch('/profile/changePhoto', [AdminProfileController::class, 'changePhoto'])->name('admin.profile.changePhoto');

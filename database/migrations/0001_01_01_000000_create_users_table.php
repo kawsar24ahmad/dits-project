@@ -21,6 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('role_id')->default(1);
             $table->string('role')->default("customer");
             $table->string("avatar")->nullable();
+            $table->string("phone")->nullable();
+            $table->string("status")->default("active");
             $table->rememberToken();
             $table->timestamps();
         });

@@ -38,7 +38,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('customer.profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('customer.profile.edit')->with('success', 'profile-updated');
     }
     public function changePhoto(Request $request): RedirectResponse
     {
@@ -70,7 +70,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('customer.profile.edit')->with('status', 'Profile photo updated.');
+        return Redirect::route('customer.profile.edit')->with('success', 'Profile photo updated.');
     }
 
     /**

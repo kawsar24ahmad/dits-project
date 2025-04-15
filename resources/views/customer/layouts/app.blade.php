@@ -80,10 +80,61 @@
 <script src="{{asset('backend/dist/js/demo.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="{{ asset('backend/plugins/sweetalert2/sweetalert2.all.min.js') }}"></script>
 @yield('script')
 
 <script>
 
+
+
+@if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: '{{ session('success') }}',
+            position: 'top-end',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: '{{ session('error') }}',
+            position: 'top-end',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('warning'))
+        Swal.fire({
+            icon: 'warning',
+            title: '{{ session('warning') }}',
+            position: 'top-end',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('info'))
+        Swal.fire({
+            icon: 'info',
+            title: '{{ session('info') }}',
+            position: 'top-end',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
 </script>
 
 </body>
