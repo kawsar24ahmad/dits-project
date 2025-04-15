@@ -48,6 +48,22 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('admin_categories.index') }}" class="nav-link ">
+                        <i class="nav-icon fas fa-pen"></i>
+                        <p>
+                            Categories
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('admin.services.index') }}" class="nav-link ">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>
+                            Services
+                        </p>
+                    </a>
+                </li>
 
             </ul>
             </li>

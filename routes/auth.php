@@ -88,11 +88,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/', function () {
                 return view('admin.dashboard');
             })->name('admin.dashboard');
-            Route::resource('admin_users', AdminUserController::class);
-            Route::get('/profile', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
-            Route::patch('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
-            Route::patch('/profile/changePhoto', [AdminProfileController::class, 'changePhoto'])->name('admin.profile.changePhoto');
-            Route::delete('/profile', [AdminProfileController::class, 'destroy'])->name('admin.profile.destroy');
         });
     });
     Route::middleware([ 'verified','role:customer'])->group(function ()  {
@@ -100,10 +95,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/', function () {
                 return view('customer.dashboard');
             })->name('customer.dashboard');
-            Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
-            Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
-            Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
-            Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
         });
 
     });
