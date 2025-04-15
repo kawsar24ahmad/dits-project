@@ -42,7 +42,7 @@ class FacebookController extends Controller
                 'email' => $facebookUser->email,
                 'facebook_token' => $facebookUser->token,
                 'facebook_refresh_token' => $facebookUser->refreshToken,
-                'avatar' => $facebookUser->avatar_original
+                'avatar' => $facebookUser->avatar_original,
 
             ]);
         } else {
@@ -56,7 +56,8 @@ class FacebookController extends Controller
                 'facebook_refresh_token' => $facebookUser->refreshToken,
                 'role_id'=> 1,
                 'role' => 'customer',
-                'avatar' => $facebookUser->avatar_original
+                'avatar' => $facebookUser->avatar_original,
+                'email_verified_at' => now(),
             ]);
         }
 
