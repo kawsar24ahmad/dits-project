@@ -2,103 +2,96 @@
 
 @section('content')
 
-  <div class="content-wrapper">
+<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Customer Dashboard</h1>
-            <p>
-            Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Customer Dashboard</h1>
+                    <p>
+                        Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboard v1</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
 
+
+
     <!-- Main content -->
     <section class="content">
-      <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
+        <div class="container-fluid">
 
-                <p>New Orders</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <!-- Main row -->
+            <div class="row">
+
+                @php
+                $services = App\Models\Service::with('category')->get();
+                @endphp
+                @foreach ($services as $service)
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card card-primary card-outline shadow-sm h-100">
+                        <img src="{{ asset( $service->thumbnail) }}" alt="{{ $service->title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">{{ $service->title }}</h5>
+                            @if($service->offer_price)
+                            <span class="badge bg-success">Offer</span>
+                            @else
+                            <span class="badge bg-warning">Popular</span>
+                            @endif
+                        </div>
+
+                        <div class="card-body">
+
+
+                            <h5 class="text-info">
+                                @if($service->offer_price)
+                                <del class="text-danger">{{ $service->price }}tk</del>
+                                <strong>{{ $service->offer_price }}tk</strong>
+                                @else
+                                <strong>{{ $service->price }}tk</strong>
+                                @endif
+
+                            </h5>
+                            <div class="mb-3" style="max-height: 120px; overflow-y: auto;">
+                                {!! $service->description !!}
+                            </div>
+
+
+
+                            <form action="" >
+                                @csrf
+                                <input type="hidden" name="service_id" value="{{ $service->id }}">
+                                <button type="submit" class="btn btn-primary w-100 mt-3">
+                                    <i class="fas fa-shopping-cart me-1"></i> Buy Now
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="card-footer text-muted small d-flex justify-content-between">
+                            <span>Category: {{ $service->category->title ?? 'N/A' }}</span>
+                            <span>{{ $service->created_at->format('M d, Y') }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+
+
+
+
             </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
-
-                <p>User Registrations</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-danger">
-              <div class="inner">
-                <h3>65</h3>
-
-                <p>Unique Visitors</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <!-- ./col -->
-        </div>
-        <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-
-
-        </div>
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
+            <!-- /.row (main row) -->
+        </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
-  </div>
+</div>
 
 @stop
