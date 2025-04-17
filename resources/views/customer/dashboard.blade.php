@@ -67,12 +67,13 @@
 
 
 
-                            <form action="" >
+                            <form action="{{ url('/pay') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="service_id" value="{{ $service->id }}">
                                 <button type="submit" class="btn btn-primary w-100 mt-3">
                                     <i class="fas fa-shopping-cart me-1"></i> Buy Now
                                 </button>
+
                             </form>
                         </div>
 
@@ -95,3 +96,6 @@
 </div>
 
 @stop
+@section('script')
+
+@endsection
