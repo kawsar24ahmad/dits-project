@@ -64,6 +64,14 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('admin.orders.index') }}" class="nav-link ">
+                        <i class="nav-icon fas fa-tag"></i>
+                        <p>
+                            Orders history
+                        </p>
+                    </a>
+                </li>
 
             </ul>
             </li>

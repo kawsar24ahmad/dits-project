@@ -5,6 +5,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::delete('/profile', [AdminProfileController::class, 'destroy'])->name('admin.profile.destroy');
         Route::resource('admin_categories',CategoryController::class);
         Route::resource('services', ServiceController::class)->names('admin.services');
+        Route::resource('orders', OrderController::class)->names('admin.orders');
     });
 
     Route::middleware([ 'auth','role:customer'])->group(function ()  {
