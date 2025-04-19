@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\Customer\ServiceController as CustomerServiceController;
+
+
+
 use App\Http\Controllers\SslCommerzPaymentController;
 
 Route::get('/', function () {
@@ -56,15 +60,21 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::resource('orders', OrderController::class)->names('admin.orders');
     });
 
-    Route::middleware([ 'auth','role:customer'])->group(function ()  {
-        Route::prefix('customer')->group(function ()  {
-            Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
-            Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
-            Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
-            Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
-        });
+
+});
+
+Route::middleware([ 'auth','role:customer'])->group(function ()  {
+    Route::prefix('customer')->group(function ()  {
+        Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+        Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+        Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
+        Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
+
+        Route::get('/services', [CustomerServiceController::class, 'index'])->name('customer.services.index');
+        Route::get('/services/all', [CustomerServiceController::class, 'showAll'])->name('customer.services.all');
 
     });
+
 });
 
 require __DIR__.'/auth.php';

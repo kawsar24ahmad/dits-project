@@ -14,6 +14,7 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('backend/plugins/fontawesome-free/css/all.min.css')}}">
 
     <!-- Vite Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -55,11 +56,9 @@
                             <div class="breadcrumb-contain breadcrumb-order">
                                 <div class="order-box d-flex flex-column align-items-center text-center">
                                     <div class="order-image mb-3">
-                                        <div class="checkmark bg-success position-relative d-inline-block rounded-circle p-3">
+                                        <div class="checkmark bg-success position-relative d-inline-block rounded-full p-3 text-white">
                                             <!-- Checkmark SVG -->
-                                            <svg class="checkmark__check" height="36" viewBox="0 0 48 36" width="48" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M47.248 3.9L43.906.667a2.428 2.428 0 0 0-3.344 0l-23.63 23.09-9.554-9.338a2.432 2.432 0 0 0-3.345 0L.692 17.654a2.236 2.236 0 0 0 .002 3.233l14.567 14.175c.926.894 2.42.894 3.342.01L47.248 7.128c.922-.89.922-2.34 0-3.23"/>
-                                            </svg>
+                                           <i class="fas fa-check"></i>
                                         </div>
                                     </div>
                                     <div class="order-contain">

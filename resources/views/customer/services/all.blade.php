@@ -8,9 +8,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Customer Dashboard</h1>
-                    <p>
-                        Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
+                    <h1 class="m-0 text-dark">Purchase Services</h1>
+
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -24,55 +23,10 @@
     <!-- /.content-header -->
 
 
-    @php
-    $purchasedServiceIds = auth()->user()->orders()->pluck('service_id')->toArray();
-    $services = App\Models\Service::whereNotIn('id', $purchasedServiceIds)->get();
-    $purchasedServices = App\Models\Service::whereIn('id', $purchasedServiceIds)->get();
-
-    @endphp
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
-            <div class="col-sm-6 my-4">
-                <h1 class="text-bold">Your Services</h1>
-            </div><!-- /.col -->
-            <!-- Small boxes (Stat box) -->
-            <div class="row">
-                @if ($purchasedServices->isEmpty())
-                <div class="col-lg-12">
-                    <div class="alert alert-info text-center">
-                        <strong>No purchased services found.</strong>
-                    </div>
-                </div>
-                @endif
-                @foreach ($purchasedServices as $service)
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <img src="{{ asset($service->thumbnail) }}" class="card-img-top" alt="{{ $service->title }}" style="height: 200px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $service->title }}</h5>
-                            <p class="card-text text-muted small">
-                                {!! Str::limit(strip_tags($service->description), 100) !!}
-                            </p>
 
-                            <div class="d-flex justify-content-between align-items-center">
-
-                                <a href="" class="btn btn-primary btn-sm">
-                                    View Details
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ./col -->
-                @endforeach
-
-
-
-                <!-- ./col -->
-            </div>
-            <!-- /.row -->
             <!-- Main row -->
             @if ($services->isNotEmpty())
             <div class="col-sm-6 my-4">
