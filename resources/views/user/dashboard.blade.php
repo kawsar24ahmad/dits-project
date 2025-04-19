@@ -1,4 +1,4 @@
-@extends('customer.layouts.app')
+@extends('user.layouts.app')
 
 @section('content')
 
@@ -8,15 +8,17 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between">
                         <h1 class="m-0 text-dark">User Dashboard</h1>
                         @if (auth()->user()->role === "customer")
-                        <a class="btn btn-primary" href="{{ route('user.dashboard') }}">Go Back To User Dashboard</a>
+                        <a class="btn btn-primary" href="{{ route('customer.dashboard') }}">Go To Customer Dashboard</a>
                         @endif
                     </div>
                     <p>
                         Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
+
                 </div><!-- /.col -->
+
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>

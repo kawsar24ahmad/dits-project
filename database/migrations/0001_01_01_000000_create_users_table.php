@@ -17,12 +17,16 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->string('facebook_id')->nullable();
-            $table->unsignedBigInteger('role_id')->default(1);
-            $table->string('role')->default("customer");
+            $table->string('provider')->nullable(); // e.g., 'google', 'facebook'
+            $table->string('provider_id')->nullable(); // e.g., Google or Facebook ID
+            $table->string('fb_access_token', 500)->nullable();
+            $table->string('fb_page_id')->nullable();
+            $table->string('fb_page_token',500)->nullable();
+            $table->enum('role', ['admin', 'user', 'customer'])->default('user');
             $table->string("avatar")->nullable();
             $table->string("phone")->nullable();
             $table->string("status")->default("active");
+            $table->decimal('wallet_balance', 10, 2)->default(.00);
             $table->rememberToken();
             $table->timestamps();
         });

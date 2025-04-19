@@ -90,12 +90,19 @@ Route::middleware('auth')->group(function () {
             })->name('admin.dashboard');
         });
     });
+    Route::middleware([ 'verified','role:user,customer'])->group(function ()  {
+        Route::prefix('user')->group(function ()  {
+            Route::get('/', function () {
+                return view('user.dashboard');
+            })->name('user.dashboard');
+        });
+
+    });
     Route::middleware([ 'verified','role:customer'])->group(function ()  {
         Route::prefix('customer')->group(function ()  {
             Route::get('/', function () {
                 return view('customer.dashboard');
             })->name('customer.dashboard');
         });
-
     });
 });

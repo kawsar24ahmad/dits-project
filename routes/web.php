@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,16 +37,25 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::resource('admin_categories',CategoryController::class);
         Route::resource('services', ServiceController::class)->names('admin.services');
     });
+});
 
-    Route::middleware([ 'auth','role:customer'])->group(function ()  {
-        Route::prefix('customer')->group(function ()  {
-            Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
-            Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
-            Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
-            Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
-        });
 
+Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
+    Route::prefix('user')->group(function ()  {
+        Route::get('/profile', [UserProfileController::class, 'edit'])->name('user.profile.edit');
+        Route::patch('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+        Route::patch('/profile/changePhoto', [UserProfileController::class, 'changePhoto'])->name('user.profile.changePhoto');
+        Route::delete('/profile', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
     });
 });
 
+Route::middleware([ 'auth','role:customer'])->group(function ()  {
+    Route::prefix('customer')->group(function ()  {
+        Route::get('/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+        Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+        Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
+        Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
+    });
+
+});
 require __DIR__.'/auth.php';
