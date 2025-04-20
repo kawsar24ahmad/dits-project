@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\WalletController as UserWalletController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -46,6 +47,8 @@ Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
         Route::patch('/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
         Route::patch('/profile/changePhoto', [UserProfileController::class, 'changePhoto'])->name('user.profile.changePhoto');
         Route::delete('/profile', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
+        Route::get('/wallet', [UserWalletController::class, 'index'])->name('user.wallet.index');
+        Route::post('/wallet/recharge', [UserWalletController::class, 'recharge'])->name('user.wallet.recharge');
     });
 });
 
