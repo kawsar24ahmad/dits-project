@@ -19,6 +19,19 @@
                             <h2 class="text-success font-weight-bold mb-0">৳{{ $balance }}</h2>
                         </div>
                     </div>
+                    <div class="card text-center shadow-sm border-success">
+                    <div class="card-header bg-primary text-white">
+                            <strong>💳 Online Recharge</strong>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ url('/pay') }}" method="post">
+                                @csrf
+                                <input type="number" name="amount" class="form-control mt-2" placeholder="Enter Amount" required>
+                                <button type="submit" class="btn btn-primary w-100 mt-2">Recharge Now</button>
+                            </form>
+                            <p class="mt-3 text-muted">Note: Minimum recharge amount is 10৳</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Recharge Form -->
@@ -30,7 +43,7 @@
                         <div class="card-body">
 
                             @if(session('success'))
-                                <div class="alert alert-success">{{ session('success') }}</div>
+                            <div class="alert alert-success">{{ session('success') }}</div>
                             @endif
 
                             <p><strong>📢 Send money to this number:</strong></p>
@@ -53,28 +66,28 @@
                                         <input type="number" name="amount" class="form-control" min="10" required>
                                     </div>
                                     <div class="form-group">
-    <label for="payment_method">Payment Method</label>
-    <select name="payment_method" class="form-control" required>
-        <option value="">Select One</option>
-        <option value="bkash">Bkash</option>
-        <option value="nagad">Nagad</option>
-        <option value="bank">Bank</option>
-    </select>
-</div>
+                                        <label for="payment_method">Payment Method</label>
+                                        <select name="payment_method" class="form-control" required>
+                                            <option value="">Select One</option>
+                                            <option value="bkash">Bkash</option>
+                                            <option value="nagad">Nagad</option>
+                                            <option value="bank">Bank</option>
+                                        </select>
+                                    </div>
 
-<div class="form-group">
-    <label for="sender_number">Sender Number or Bank Account</label>
-    <input type="text" name="sender_number" class="form-control" required placeholder="Ex: 01XXXXXXXXX or Your Bank A/C No">
-</div>
+                                    <div class="form-group">
+                                        <label for="sender_number">Sender Number or Bank Account</label>
+                                        <input type="text" name="sender_number" class="form-control" required placeholder="Ex: 01XXXXXXXXX or Your Bank A/C No">
+                                    </div>
 
-<div class="form-group">
-    <label for="transaction_id">Transaction/Reference ID</label>
-    <input type="text" name="transaction_id" class="form-control" required>
-</div>
+                                    <div class="form-group">
+                                        <label for="transaction_id">Transaction/Reference ID</label>
+                                        <input type="text" name="transaction_id" class="form-control" required>
+                                    </div>
 
 
 
-                                <button type="submit" class="btn btn-success w-100">📩 Submit Recharge Request</button>
+                                    <button type="submit" class="btn btn-success w-100">📩 Submit Recharge Request</button>
                                 </div>
                             </form>
 
@@ -104,28 +117,28 @@
                                 </thead>
                                 <tbody>
                                     @forelse($transactions as $txn)
-                                        <tr>
-                                            <td>{{ $txn->created_at->format('d M, Y h:i A') }}</td>
-                                            <td>{{ ucfirst($txn->type) }}</td>
-                                            <td>{{ $txn->sender_number }}</td>
-                                            <td>{{ ucfirst($txn->method) }}</td>
-                                            <td>{{ ucfirst($txn->payment_method) }}</td>
-                                            <td>{{ $txn->transaction_id }}</td>
-                                            <td>৳{{ $txn->amount }}</td>
-                                            <td>
-                                                @if($txn->status == 'pending')
-                                                    <span class="badge badge-warning">Pending</span>
-                                                @elseif($txn->status == 'approved')
-                                                    <span class="badge badge-success">Approved</span>
-                                                @else
-                                                    <span class="badge badge-danger">Rejected</span>
-                                                @endif
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ $txn->created_at->format('d M, Y h:i A') }}</td>
+                                        <td>{{ ucfirst($txn->type) }}</td>
+                                        <td>{{ $txn->sender_number }}</td>
+                                        <td>{{ ucfirst($txn->method) }}</td>
+                                        <td>{{ ucfirst($txn->payment_method) }}</td>
+                                        <td>{{ $txn->transaction_id }}</td>
+                                        <td>৳{{ $txn->amount }}</td>
+                                        <td>
+                                            @if($txn->status == 'pending')
+                                            <span class="badge badge-warning">Pending</span>
+                                            @elseif($txn->status == 'approved')
+                                            <span class="badge badge-success">Approved</span>
+                                            @else
+                                            <span class="badge badge-danger">Rejected</span>
+                                            @endif
+                                        </td>
+                                    </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted">No transactions found.</td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">No transactions found.</td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                             </table>

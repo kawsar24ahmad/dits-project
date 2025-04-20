@@ -5,11 +5,15 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\WalletTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\User\WalletController as UserWalletController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
-use App\Http\Controllers\User\ProfileController as UserProfileController;
-use App\Http\Controllers\User\WalletController as UserWalletController;
+use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
+use App\Http\Controllers\SslCommerzPaymentController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,6 +41,9 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::delete('/profile', [AdminProfileController::class, 'destroy'])->name('admin.profile.destroy');
         Route::resource('admin_categories',CategoryController::class);
         Route::resource('services', ServiceController::class)->names('admin.services');
+
+        Route::get('/wallet-transactions', [WalletTransactionController::class, 'index'])->name('admin.wallet.transactions');
+        Route::post('/wallet-transactions/{transaction}', [WalletTransactionController::class, 'update'])->name('admin.wallet.transactions.update');
     });
 });
 
@@ -49,6 +56,7 @@ Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
         Route::delete('/profile', [UserProfileController::class, 'destroy'])->name('user.profile.destroy');
         Route::get('/wallet', [UserWalletController::class, 'index'])->name('user.wallet.index');
         Route::post('/wallet/recharge', [UserWalletController::class, 'recharge'])->name('user.wallet.recharge');
+        Route::get('/transactions', [UserWalletTransactionController::class, 'index'])->name('user.transactions.index');
     });
 });
 
@@ -61,4 +69,18 @@ Route::middleware([ 'auth','role:customer'])->group(function ()  {
     });
 
 });
+
+// SSLCOMMERZ Start
+Route::middleware(['auth'])->group(function () {
+    Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
+    Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
+    Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
+    Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
+});
+Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+
 require __DIR__.'/auth.php';

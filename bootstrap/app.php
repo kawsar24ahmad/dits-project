@@ -16,6 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 'role' => \App\Http\Middleware\CheckRole::class,
             ]
         );
+        $middleware->validateCsrfTokens(except: [
+            '/pay-via-ajax',
+            '/success',
+            '/cancel',
+            '/fail',
+            '/ipn'
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

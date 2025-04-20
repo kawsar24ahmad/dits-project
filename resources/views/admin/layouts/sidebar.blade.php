@@ -64,10 +64,16 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.wallet.transactions') }}" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>Transactions</p>
+                    </a>
+                </li>
+
 
             </ul>
-            </li>
-            </ul>
+
         </nav>
         <!-- /.sidebar-menu -->
     </div>

@@ -35,7 +35,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item has-treeview">
-                    <a href="" class="nav-link ">
+                    <a href="{{ route('user.dashboard') }}" class="nav-link ">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>
                             Dashboard
@@ -46,6 +46,12 @@
                     <a href="{{ route('user.wallet.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-wallet"></i>
                         <p>My Wallet</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('user.transactions.index') }}" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>Transactions</p>
                     </a>
                 </li>
 
