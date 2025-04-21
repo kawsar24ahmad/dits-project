@@ -44,6 +44,7 @@ class ServiceController extends Controller
 
         // Deduct balance
         $user->wallet_balance -= $request->price;
+        $user->role = 'customer';
         $user->save();
 
         // Create wallet transaction
