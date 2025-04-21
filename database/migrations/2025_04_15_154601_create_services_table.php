@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServicesTable extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -14,13 +15,19 @@ class CreateServicesTable extends Migration
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->decimal('offer_price', 10, 2)->nullable();
-            $table->unsignedBigInteger('category_id');
-            $table->string('thumbnail');
-            $table->boolean('is_active')->default(1);
-            $table->timestamps();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('icon')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
 
-            // Foreign key constraint (optional, if categories table exists)
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->string('type')->nullable();
+
+            // Optional FK constraint if 'categories' table exists
+            $table->foreign('category_id')
+                  ->references('id')
+                  ->on('categories')
+                  ->nullOnDelete();
         });
     }
 
@@ -28,4 +35,4 @@ class CreateServicesTable extends Migration
     {
         Schema::dropIfExists('services');
     }
-}
+};

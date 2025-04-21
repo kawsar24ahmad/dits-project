@@ -24,6 +24,13 @@
       </form>
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
+
+          @if (auth()->user()->role === "customer")
+          <li class="nav-item me-3 d-none d-md-block">
+              <a class="btn btn-primary" href="{{ route('customer.dashboard') }}">Customer Dashboard</a>
+          </li>
+
+          @endif
           <li class="nav-item me-3 d-none d-md-block">
               <button class="btn btn-outline-secondary">
                   <i class="bi bi-headset"></i> Support
@@ -50,16 +57,16 @@
 
           <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                @if(auth()->user()->avatar != null)
-                    @if (file_exists(auth()->user()->avatar))
-                    <img src="{{ asset(auth()->user()->avatar) }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
-                    @else
-                    <img src="{{ auth()->user()->avatar }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
-                    @endif
+                  @if(auth()->user()->avatar != null)
+                  @if (file_exists(auth()->user()->avatar))
+                  <img src="{{ asset(auth()->user()->avatar) }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
+                  @else
+                  <img src="{{ auth()->user()->avatar }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
+                  @endif
 
-                @else
-                    <img src="{{ asset('default.png') }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
-                @endif
+                  @else
+                  <img src="{{ asset('default.png') }}" alt="User" class="rounded-circle" style="height: 32px; width: 32px; object-fit: cover;">
+                  @endif
 
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">

@@ -51,6 +51,7 @@
                                                     <th>Offer Price</th>
                                                     <th>Category</th>
                                                     <th>Thumbnail</th>
+                                                    <th>Icon</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -69,6 +70,7 @@
                                                             N/A
                                                         @endif
                                                     </td>
+                                                    <td>{{ $service->icon ?? 'N/A' }}</td>
                                                     <td>
                                                         <a href="{{ route('admin.services.edit', $service->id) }}" class="text-primary me-1">
                                                             <i class="fa fa-edit"></i>

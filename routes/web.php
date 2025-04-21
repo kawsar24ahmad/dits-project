@@ -12,6 +12,7 @@ use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
+use App\Http\Controllers\User\ServiceController as UserServiceController;
 use App\Http\Controllers\SslCommerzPaymentController;
 
 
@@ -57,6 +58,8 @@ Route::middleware([ 'auth','role:user,customer'])->group(function ()  {
         Route::get('/wallet', [UserWalletController::class, 'index'])->name('user.wallet.index');
         Route::post('/wallet/recharge', [UserWalletController::class, 'recharge'])->name('user.wallet.recharge');
         Route::get('/transactions', [UserWalletTransactionController::class, 'index'])->name('user.transactions.index');
+        Route::get('/services/{id}', [UserServiceController::class, 'show'])->name('user.services.show');
+        Route::post('/services/facebook-ad/buy', [UserServiceController::class, 'buyFacebookAdService'])->name('user.services.facebook_ad.buy');
     });
 });
 

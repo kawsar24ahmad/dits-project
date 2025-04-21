@@ -7,119 +7,126 @@
 
 @section('content')
 <div class="app-content content">
-    <div class="content-overlay"></div>
-    <div class="header-navbar-shadow"></div>
     <div class="content-wrapper">
         <div class="content-header row">
             <div class="content-header-left col-md-9 col-12 mb-2">
                 <div class="row breadcrumbs-top">
                     <div class="col-12">
-                        <div class="breadcrumb-wrapper col-12">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
-                                <li class="breadcrumb-item active"><a href="{{ route('admin.services.index') }}">Services</a></li>
-                            </ol>
-                        </div>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
+                            <li class="breadcrumb-item active"><a href="{{ route('admin.services.index') }}">Services</a></li>
+                        </ol>
                     </div>
                 </div>
             </div>
         </div>
 
+
+
+        {{-- Show validation errors --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="content-body">
-            <section id="basic-vertical-layouts">
-                <form class="form form-vertical" action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data">
+            <section>
+                <form class="form" action="{{ route('admin.services.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                     @csrf
-                    <div class="row match-height">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Add New Service</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <!-- Title -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Title <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="title" value="{{ old('title') }}" required>
-                                                @error('title') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
+                    <div class="card">
+                        <div class="card-header"><h4>Add New Service</h4></div>
+                        <div class="card-body row">
 
-
-
-                                        <!-- Description -->
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label>Description <span class="text-danger">*</span></label>
-                                                <textarea id="summernote" class="form-control" name="description">{{ old('description') }}</textarea>
-                                                @error('description') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Price -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Price <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" name="price" value="{{ old('price') }}" step="0.01" required>
-                                                @error('price') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Offer Price -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Offer Price</label>
-                                                <input type="number" class="form-control" name="offer_price" value="{{ old('offer_price') }}" step="0.01">
-                                                @error('offer_price') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Category -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Category <span class="text-danger">*</span></label>
-                                                <select class="form-control js-example-basic-single" name="category_id" required>
-                                                    <option value="">-- Select Category --</option>
-                                                    @foreach($categories as $category)
-                                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                            {{ $category->title }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Thumbnail -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Thumbnail <span class="text-danger">*</span></label>
-                                                <input type="file" class="form-control" name="thumbnail" required>
-                                                @error('thumbnail') <small class="text-danger">{{ $message }}</small> @enderror
-                                            </div>
-                                        </div>
-
-
-
-                                        <!-- Is Active -->
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Status</label>
-                                                <select class="form-control" name="is_active">
-                                                    <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active</option>
-                                                    <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Title <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="title" value="{{ old('title') }}" required>
+                                    @error('title') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
                             </div>
 
-                            <!-- Submit -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Description <span class="text-danger">*</span></label>
+                                    <textarea id="summernote" class="form-control" name="description">{{ old('description') }}</textarea>
+                                    @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Price <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control" name="price" value="{{ old('price') }}" step="0.01" required>
+                                    @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Offer Price</label>
+                                    <input type="number" class="form-control" name="offer_price" value="{{ old('offer_price') }}" step="0.01">
+                                    @error('offer_price') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Category <span class="text-danger">*</span></label>
+                                    <select class="form-control js-example-basic-single" name="category_id">
+                                        <option value="">-- Select Category --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->title }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Thumbnail <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="thumbnail" >
+                                    @error('thumbnail') <small class="text-danger">{{ $message }}</small> @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Icon</label>
+                                    <input type="text" name="icon" class="form-control" value="{{ old('icon') }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select class="form-control" name="is_active">
+                                        <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active</option>
+                                        <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Type -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Type</label>
+                                    <input type="text" name="type" class="form-control" value="{{ old('type') }}">
+                                </div>
+                            </div>
+
                             <div class="col-12 text-end">
-                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="submit" class="btn btn-primary mt-2">Save</button>
                             </div>
+
                         </div>
                     </div>
                 </form>
@@ -140,17 +147,88 @@
         $('#summernote').summernote({
             placeholder: 'Write description here...',
             tabsize: 2,
-            height: 150,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']]
-            ]
+            height: 150
         });
+
+        $('#type').trigger('change');
+    });
+
+    $('#type').on('change', function () {
+        let val = $(this).val();
+        $('#form-fields, #view-only-input, #external-link-input').addClass('d-none');
+
+        if (val === 'form') {
+            $('#form-fields').removeClass('d-none');
+        } else if (val === 'view_only') {
+            $('#view-only-input').removeClass('d-none');
+        } else if (val === 'external_link') {
+            $('#external-link-input').removeClass('d-none');
+        }
+    });
+
+    let fieldIndex = 1;
+function addField() {
+    $('#form-fields').append(`
+        <div class="form-field-item border p-3 rounded mb-3">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <label>Label</label>
+                    <input type="text" name="fields[${fieldIndex}][label]" class="form-control" placeholder="Label" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Tag</label>
+                    <input type="text" name="fields[${fieldIndex}][tag]" class="form-control" placeholder="Tag name" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Name</label>
+                    <input type="text" name="fields[${fieldIndex}][name]" class="form-control" placeholder="Input name" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Placeholder</label>
+                    <input type="text" name="fields[${fieldIndex}][placeholder]" class="form-control" placeholder="Placeholder text" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Type</label>
+                    <select name="fields[${fieldIndex}][type]" class="form-control" required>
+                        <option value="text">Text</option>
+                        <option value="email">Email</option>
+                        <option value="file">File</option>
+                        <option value="number">Number</option>
+                        <option value="ratio">Ratio</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-check">
+                        <input type="checkbox" name="fields[${fieldIndex}][required]" class="form-check-input" id="required_${fieldIndex}">
+                        <label class="form-check-label" for="required_${fieldIndex}">Required</label>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end justify-content-end">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeField(this)">Remove</button>
+                </div>
+            </div>
+        </div>
+    `);
+    fieldIndex++;
+}
+
+
+    function removeField(btn) {
+        $(btn).closest('.form-field-item').remove();
+    }
+
+    $('form').on('submit', function () {
+        const fields = [];
+        $('.form-field-item').each(function () {
+            fields.push({
+                label: $(this).find('[name$="[label]"]').val(),
+                name: $(this).find('[name$="[name]"]').val(),
+                type: $(this).find('[name$="[type]"]').val(),
+                required: $(this).find('[name$="[required]"]').is(':checked')
+            });
+        });
+
+        $('#form_fields_json').val(JSON.stringify(fields));
     });
 </script>
 @endsection

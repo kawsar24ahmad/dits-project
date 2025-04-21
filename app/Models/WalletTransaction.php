@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FacebookAd;
 use Illuminate\Database\Eloquent\Model;
 
 class WalletTransaction extends Model
@@ -21,5 +22,9 @@ class WalletTransaction extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function facebookAd()
+    {
+        return $this->hasOne(FacebookAd::class);
     }
 }

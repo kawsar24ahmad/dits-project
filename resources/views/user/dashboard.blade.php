@@ -1,5 +1,25 @@
 @extends('user.layouts.app')
 
+@section("css")
+<style>
+        body {
+            font-family: "Helvetica Neue", sans-serif;
+            background-color: #f9f9f9;
+        }
+        .service-card {
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .rounded-icon {
+            font-size: 32px;
+        }
+    </style>
+
+@endsection
+
 @section('content')
 
 <div class="content-wrapper">
@@ -10,12 +30,9 @@
                 <div class="col-sm-6">
                     <div class="d-flex justify-content-between">
                         <h1 class="m-0 text-dark">User Dashboard</h1>
-                        @if (auth()->user()->role === "customer")
-                        <a class="btn btn-primary" href="{{ route('customer.dashboard') }}">Go To Customer Dashboard</a>
-                        @endif
+
                     </div>
-                    <p>
-                        Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
+
 
                 </div><!-- /.col -->
 
@@ -35,63 +52,120 @@
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
+            <!-- Welcome -->
+            <div class="text-center mb-4">
+                <h4>স্বাগতম, {{ auth()->user()->name }}</h4>
+                <button class="btn btn-primary mt-2">একটি সার্ভিস বুকিং করুন</button>
+            </div>
 
-            <!-- Main row -->
-            <div class="row">
-
-                @php
-                $services = App\Models\Service::with('category')->get();
-                @endphp
-                @foreach ($services as $service)
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card card-primary card-outline shadow-sm h-100">
-                        <img src="{{ asset( $service->thumbnail) }}" alt="{{ $service->title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ $service->title }}</h5>
-                            @if($service->offer_price)
-                            <span class="badge bg-success">Offer</span>
-                            @else
-                            <span class="badge bg-warning">Popular</span>
-                            @endif
-                        </div>
-
-                        <div class="card-body">
-
-
-                            <h5 class="text-info">
-                                @if($service->offer_price)
-                                <del class="text-danger">{{ $service->price }}tk</del>
-                                <strong>{{ $service->offer_price }}tk</strong>
-                                @else
-                                <strong>{{ $service->price }}tk</strong>
-                                @endif
-
-                            </h5>
-                            <div class="mb-3" style="max-height: 120px; overflow-y: auto;">
-                                {!! $service->description !!}
+            <!-- Services -->
+            <h5 class="mb-3">আমাদের সার্ভিসসমূহ</h5>
+            <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+                @if (!empty($services))
+                    @foreach ($services as $service)
+                        <div class="col">
+                            <a href="{{ route('user.services.show', $service->id) }}">
+                            <div class="card text-center service-card p-3">
+                                <div class="rounded-icon text-primary mb-2">{{ $service->icon }}</div>
+                                <div>{{ $service->title }}</div>
                             </div>
-
-
-
-                            <form action="" >
-                                @csrf
-                                <input type="hidden" name="service_id" value="{{ $service->id }}">
-                                <button type="submit" class="btn btn-primary w-100 mt-3">
-                                    <i class="fas fa-shopping-cart me-1"></i> Buy Now
-                                </button>
-                            </form>
+                            </a>
                         </div>
-
-                        <div class="card-footer text-muted small d-flex justify-content-between">
-                            <span>Category: {{ $service->category->title ?? 'N/A' }}</span>
-                            <span>{{ $service->created_at->format('M d, Y') }}</span>
-                        </div>
+                    @endforeach
+                @endif
+                <!-- <div class="col">
+                    <div class="card text-center service-card p-3">
+                        <div class="rounded-icon text-primary mb-2">🎬</div>
+                        <div>ভিডিও মার্কেটিং</div>
+                    </div>
+                </div> -->
+                <!-- <div class="col">
+                    <div class="card text-center service-card p-3">
+                        <div class="rounded-icon text-primary mb-2">📢</div>
+                        <div>ফেসবুক অ্যাডস</div>
                     </div>
                 </div>
-                @endforeach
+                <div class="col">
+                    <div class="card text-center service-card p-3">
+                        <div class="rounded-icon text-primary mb-2">🖥️</div>
+                        <div>ওয়েব ডিজাইন</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center service-card p-3">
+                        <div class="rounded-icon text-primary mb-2">⚙️</div>
+                        <div>অন্যান্য</div>
+                    </div>
+                </div> -->
+            </div>
 
 
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>150</h3>
+
+                            <p>New Orders</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                            <p>Bounce Rate</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>44</h3>
+
+                            <p>User Registrations</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            <h3>65</h3>
+
+                            <p>Unique Visitors</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-pie-graph"></i>
+                        </div>
+                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <!-- Main row -->
+            <div class="row">
 
 
             </div>

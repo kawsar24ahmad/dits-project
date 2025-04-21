@@ -16,7 +16,14 @@ class Service extends Model
         'category_id',
         'thumbnail',
         'is_active',
+        'icon',
+        'type',
+        'form_fields_json',
+        'view_path',
+        'external_link'
     ];
+
+
     public function category()  {
         return $this->belongsTo(Category::class);
     }

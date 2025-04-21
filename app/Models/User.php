@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FacebookAd;
 use App\Models\WalletTransaction;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -60,6 +61,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function walletTransactions()
     {
         return $this->hasMany(WalletTransaction::class);
+    }
+    public function facebookAds()
+    {
+        return $this->hasMany(FacebookAd::class);
     }
 
 }

@@ -93,7 +93,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware([ 'verified','role:user,customer'])->group(function ()  {
         Route::prefix('user')->group(function ()  {
             Route::get('/', function () {
-                return view('user.dashboard');
+                $services = \App\Models\Service::all();
+                return view('user.dashboard', compact('services'));
             })->name('user.dashboard');
         });
 
