@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Models\ServicePurchase;
 use App\Models\WalletTransaction;
 use App\Http\Controllers\Controller;
 
@@ -20,13 +21,52 @@ class WalletTransactionController extends Controller
             'status' => 'required|in:approved,rejected',
         ]);
 
-        if ($request->status == 'approved' && $transaction->status != 'approved') {
-            $transaction->user->increment('wallet_balance', $transaction->amount);
+        // আগে থেকেই অ্যাপ্রুভ হয়ে থাকলে
+        if ($transaction->status == 'approved') {
+            return back()->with('info', 'This transaction is already approved.');
         }
 
+        // APPROVE হ্যান্ডলিং
+        if ($request->status === 'approved') {
+            if (in_array($transaction->type, ['recharge', 'bonus', 'refund'])) {
+                // ইউজারের ওয়ালেটে টাকা যোগ করো
+                $transaction->user->increment('wallet_balance', $transaction->amount);
+            }
+
+            // যদি সার্ভিস পেমেন্ট হয়
+            if ($transaction->type === 'payment') {
+                $purchase = ServicePurchase::with('user')->where('wallet_transaction_id', $transaction->id)->first();
+                if ($purchase) {
+                    $purchase->user->role = 'customer';
+                    $purchase->user->save();
+                    $purchase->update([
+                        'status' => 'approved',
+                        'approved_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        // REJECT হ্যান্ডলিং
+        if ($request->status === 'rejected') {
+            if ($transaction->type === 'payment') {
+                // টাকা রিফান্ড
+                $transaction->user->increment('wallet_balance', $transaction->amount);
+
+                $purchase = ServicePurchase::where('wallet_transaction_id', $transaction->id)->first();
+                if ($purchase) {
+                    $purchase->update([
+                        'status' => 'rejected',
+                    ]);
+                }
+            }
+        }
+
+        // ফাইনালি ট্রানজেকশন আপডেট
         $transaction->update(['status' => $request->status]);
 
         return back()->with('success', 'Transaction updated successfully.');
     }
+
 
 }

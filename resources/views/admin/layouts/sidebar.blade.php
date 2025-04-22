@@ -70,6 +70,18 @@
                         <p>Transactions</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.service.purchases') }}" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>Service Purchases</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.facebook-ad-requests') }}" class="nav-link">
+                        <i class="nav-icon fas fa-wallet"></i>
+                        <p>Facebook Ads Orders</p>
+                    </a>
+                </li>
 
 
             </ul>

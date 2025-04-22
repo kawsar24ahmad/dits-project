@@ -27,7 +27,7 @@
 
           @if (auth()->user()->role === "customer")
           <li class="nav-item me-3 d-none d-md-block">
-              <a class="btn btn-primary" href="{{ route('customer.dashboard') }}">Customer Dashboard</a>
+              <a class="btn btn-primary" href="{{ route('customer.dashboard') }}">Service Dashboard</a>
           </li>
 
           @endif

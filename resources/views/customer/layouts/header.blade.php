@@ -24,6 +24,12 @@
       </form>
       <!-- Right navbar links -->
       <ul class="navbar-nav ms-auto align-items-center">
+        @if (auth()->user()->role === "customer")
+          <li class="nav-item me-3 d-none d-md-block">
+              <a class="btn btn-primary" href="{{ route('user.dashboard') }}">User Dashboard</a>
+          </li>
+
+          @endif
           <li class="nav-item me-3 d-none d-md-block">
               <button class="btn btn-outline-secondary">
                   <i class="bi bi-headset"></i> Support

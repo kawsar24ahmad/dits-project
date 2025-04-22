@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Service;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\FacebookAd;
+use Illuminate\Http\Request;
+use App\Models\ServicePurchase;
 use App\Models\WalletTransaction;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class ServiceController extends Controller
 {
@@ -22,6 +24,7 @@ class ServiceController extends Controller
                 abort(404);
         }
     }
+
     public function buyFacebookAdService(Request $request)
     {
         $validated = $request->validate([
@@ -42,40 +45,60 @@ class ServiceController extends Controller
             return back()->with('error', 'You do not have enough balance.');
         }
 
-        // Deduct balance
-        $user->wallet_balance -= $request->price;
-        $user->role = 'customer';
-        $user->save();
+        DB::beginTransaction();
 
-        // Create wallet transaction
-        $transaction = WalletTransaction::create([
-            'user_id' => $user->id,
-            'amount' => -$request->price,
-            'type' => 'payment',
-            'method' => 'wallet',
-            'transaction_id' => uniqid(),
-            'purpose' => 'Facebook Ad Service Purchase',
-            'description' => 'Ad for page: ' . $request->page_link,
-        ]);
+        try {
+            // Update user
+            $user->wallet_balance -= $request->price;
+            $user->save();
 
-        // Save ad request
-        FacebookAd::create([
-            'user_id' => $user->id,
-            'wallet_transaction_id' => $transaction->id,
-            'page_link' => $request->page_link,
-            'budget' => $request->budget,
-            'duration' => $request->duration,
-            'min_age' => $request->min_age,
-            'max_age' => $request->max_age,
-            'location' => $request->location,
-            'button' => $request->button,
-            'greeting' => $request->greeting,
-            'price' => $request->price,
-            'status' => 'approved',
-        ]);
+            // Wallet transaction
+            $transaction = WalletTransaction::create([
+                'user_id' => $user->id,
+                'amount' => $request->price,
+                'type' => 'payment',
+                'method' => 'wallet',
+                'transaction_id' => uniqid(),
+                'purpose' => 'Facebook Ad Service Purchase',
+                'description' => 'Ad for page: ' . $request->page_link,
+                'status' => 'pending',
+            ]);
 
-        return redirect()->route('customer.dashboard')->with('success', 'Your Facebook ad request has been submitted successfully.');
+            // Service purchase record
+            ServicePurchase::create([
+                'user_id' => $user->id,
+                'service_id' => $request->service_id,
+                'price' => $request->price,
+                'wallet_transaction_id' => $transaction->id,
+                'status' => 'pending',
+            ]);
+
+            // Facebook ad
+            FacebookAd::create([
+                'user_id' => $user->id,
+                'wallet_transaction_id' => $transaction->id,
+                'page_link' => $request->page_link,
+                'budget' => $request->budget,
+                'duration' => $request->duration,
+                'min_age' => $request->min_age,
+                'max_age' => $request->max_age,
+                'location' => $request->location,
+                'button' => $request->button,
+                'greeting' => $request->greeting,
+                'price' => $request->price,
+                'status' => 'pending',
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('user.dashboard')->with('success', 'Your Facebook ad request has been submitted successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Something went wrong. Please try again.');
+        }
     }
+
 
 
 }

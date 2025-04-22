@@ -9,10 +9,7 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                 <div class="d-flex justify-content-between">
-                        <h1 class="m-0 text-dark">User Dashboard</h1>
-                        @if (auth()->user()->role === "customer")
-                        <a class="btn btn-primary" href="{{ route('user.dashboard') }}">Go Back To User Dashboard</a>
-                        @endif
+                        <h1 class="m-0 text-dark">Service Dashboard</h1>
                     </div>
                     <p>
                         Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
@@ -36,62 +33,25 @@
 
             <!-- Main row -->
             <div class="row">
+                <h5 class="mb-3">Your Services</h5>
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
 
-                @php
-                $services = App\Models\Service::with('category')->get();
-                @endphp
-                @foreach ($services as $service)
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card card-primary card-outline shadow-sm h-100">
-                        <img src="{{ asset( $service->thumbnail) }}" alt="{{ $service->title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
-
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="card-title mb-0">{{ $service->title }}</h5>
-                            @if($service->offer_price)
-                            <span class="badge bg-success">Offer</span>
-                            @else
-                            <span class="badge bg-warning">Popular</span>
-                            @endif
-                        </div>
-
-                        <div class="card-body">
-
-
-                            <h5 class="text-info">
-                                @if($service->offer_price)
-                                <del class="text-danger">{{ $service->price }}tk</del>
-                                <strong>{{ $service->offer_price }}tk</strong>
-                                @else
-                                <strong>{{ $service->price }}tk</strong>
-                                @endif
-
-                            </h5>
-                            <div class="mb-3" style="max-height: 120px; overflow-y: auto;">
-                                {!! $service->description !!}
+                    @php
+                    $services = App\Models\ServicePurchase::with('service')->where([
+                        'user_id'=> auth()->id(),
+                        'status' => 'approved'
+                    ])->get();
+                    @endphp
+                    @foreach ($services as $service)
+                        <div class="col">
+                            <div class="card text-center service-card p-3">
+                                <div class="rounded-icon text-primary mb-2">📢</div>
+                                <div>{{ $service->service->title }}</div>
                             </div>
-
-
-
-                            <form action="" >
-                                @csrf
-                                <input type="hidden" name="service_id" value="{{ $service->id }}">
-                                <button type="submit" class="btn btn-primary w-100 mt-3">
-                                    <i class="fas fa-shopping-cart me-1"></i> Buy Now
-                                </button>
-                            </form>
                         </div>
+                    @endforeach
 
-                        <div class="card-footer text-muted small d-flex justify-content-between">
-                            <span>Category: {{ $service->category->title ?? 'N/A' }}</span>
-                            <span>{{ $service->created_at->format('M d, Y') }}</span>
-                        </div>
-                    </div>
                 </div>
-                @endforeach
-
-
-
-
             </div>
             <!-- /.row (main row) -->
         </div><!-- /.container-fluid -->

@@ -5,15 +5,16 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ServicePurchaseController;
+use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\Admin\WalletTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\User\WalletController as UserWalletController;
 use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\ServiceController as UserServiceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
-use App\Http\Controllers\User\ServiceController as UserServiceController;
-use App\Http\Controllers\SslCommerzPaymentController;
 
 
 Route::get('/', function () {
@@ -45,6 +46,12 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
 
         Route::get('/wallet-transactions', [WalletTransactionController::class, 'index'])->name('admin.wallet.transactions');
         Route::post('/wallet-transactions/{transaction}', [WalletTransactionController::class, 'update'])->name('admin.wallet.transactions.update');
+        Route::get('/service-purchases', [ServicePurchaseController::class, 'index'])->name('admin.service.purchases');
+        Route::put('/service/purchase/{id}/approve', [ServicePurchaseController::class, 'approve'])->name('admin.service.purchase.approve');
+        Route::put('/service/purchase/{id}/reject', [ServicePurchaseController::class, 'reject'])->name('admin.service.purchase.reject');
+        Route::delete('/service/purchase/{id}', [ServicePurchaseController::class, 'destroy'])->name('admin.service.purchase.destroy');
+        Route::get('/facebook-ad-requests', [ServicePurchaseController::class, 'facebookAdRequests'])->name('admin.facebook-ad-requests');
+
     });
 });
 
