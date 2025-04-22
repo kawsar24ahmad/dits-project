@@ -32,12 +32,42 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                @php
+                    $totalOrders = \App\Models\FacebookAd::where('status', 'pending')->count();
+                @endphp
+                <h3>{{ $totalOrders }}</h3>
 
-                <p>New Orders</p>
+                <p>New FacebookAd Orders</p>
+
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
+              </div>
+              <a href="{{ route('admin.service.purchases') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                @php
+                    $totalEarnings = \App\Models\WalletTransaction::where([
+                    'type' => 'payment',
+                    'status' => 'approved'
+                    ])->sum('amount');
+                @endphp
+                <h3>
+                    @if($totalEarnings > 0)
+                        {{ number_format($totalEarnings, 2) }}tk
+                    @else
+                        0tk
+                    @endif
+                </h3>
+                <p>Total Earnings</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-stats-bars"></i>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
@@ -47,9 +77,20 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Bounce Rate</p>
+                @php
+                    $totalEarnings = \App\Models\WalletTransaction::where([
+                    'type' => 'recharge',
+                    'status' => 'approved'
+                    ])->sum('amount');
+                @endphp
+                <h3>
+                    @if($totalEarnings > 0)
+                        {{ number_format($totalEarnings, 2) }}tk
+                    @else
+                        0tk
+                    @endif
+                </h3>
+                <p>Total Recharge</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -62,14 +103,17 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                @php
+                    $userCount = \App\Models\User::count();
+                @endphp
+                <h3>{{ $userCount }}</h3>
 
                 <p>User Registrations</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('admin_users.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -77,7 +121,13 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+               <!-- unique Visitors -->
+                @php
+                    $uniqueVisitors = \App\Models\Visitor::distinct('ip_address')->count('ip_address');
+                @endphp
+                <h3>{{ $uniqueVisitors }}</h3>
+                <!-- unique Visitors -->
+
 
                 <p>Unique Visitors</p>
               </div>

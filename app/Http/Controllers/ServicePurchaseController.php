@@ -11,7 +11,7 @@ class ServicePurchaseController extends Controller
     public function index()
     {
         // Fetch all service purchases for the authenticated user
-        $purchases = ServicePurchase::with('service', 'walletTransaction')->paginate(10);
+        $purchases = ServicePurchase::with('service', 'walletTransaction')->latest()->paginate(10);
 
         return view('admin.service_purchases.index', compact('purchases'));
     }
@@ -24,6 +24,12 @@ class ServicePurchaseController extends Controller
         $service->walletTransaction()->update([
             'status' => 'approved',
         ]);
+        $walleteTransactionId = $service->walletTransaction->id;
+        $facebookAd = FacebookAd::where('wallet_transaction_id', $walleteTransactionId)->first();
+        if ($facebookAd) {
+            $facebookAd->status = 'approved';
+            $facebookAd->save();
+        }
         $service->user->role = 'customer';
         $service->user->save();
         $service->save();
@@ -40,6 +46,12 @@ class ServicePurchaseController extends Controller
         $service->walletTransaction()->update([
             'status' => 'rejected',
         ]);
+        $walleteTransactionId = $service->walletTransaction->id;
+        $facebookAd = FacebookAd::where('wallet_transaction_id', $walleteTransactionId)->first();
+        if ($facebookAd) {
+            $facebookAd->status = 'rejected';
+            $facebookAd->save();
+        }
         $service->save();
 
         return redirect()->route('admin.service.purchases')->with('error', 'Service purchase rejected.');
