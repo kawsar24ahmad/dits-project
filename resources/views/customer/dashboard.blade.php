@@ -1,5 +1,42 @@
 @extends('customer.layouts.app')
 
+@section('css')
+<style>
+    .cover-photo {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .page-info {
+        position: absolute;
+        top: 150px;
+        left: 1rem;
+        display: flex;
+        align-items: center;
+        z-index: 2;
+    }
+
+    .profile-picture {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        margin-right: 1rem;
+        object-fit: cover;
+        background: white;
+    }
+
+    .card h5, .card .small {
+        margin: 0;
+    }
+</style>
+
+
+
+@endsection
+
 @section('content')
 
 <div class="content-wrapper">
@@ -8,11 +45,10 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between">
                         <h1 class="m-0 text-dark">Service Dashboard</h1>
                     </div>
-                    <p>
-                        Hello {{ auth()->user()->name }}, 👋🏻 This is your regular dashboard!</p>
+
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -34,27 +70,82 @@
             <!-- Main row -->
             <div class="row">
                 <h5 class="mb-3">Your Services</h5>
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4 justify-content-center">
 
                     @php
                     $services = App\Models\ServicePurchase::with('service')->where([
-                        'user_id'=> auth()->id(),
-                        'status' => 'approved'
+                    'user_id'=> auth()->id(),
+                    'status' => 'approved'
                     ])->get();
                     @endphp
                     @foreach ($services as $service)
-                        <div class="col">
-                            <a href="{{ route('facebook.insights') }}">
-                                <div class="card text-center service-card p-3">
-                                    <div class="rounded-icon text-primary mb-2">📢</div>
-                                    <div>{{ $service->service->title }}</div>
-                                </div>
-                            </a>
-                        </div>
+                    <div class="col">
+                        <a href="{{ route('facebook.insights','4') }}">
+                            <div class="card text-center service-card p-3">
+                                <div class="rounded-icon text-primary mb-2">📢</div>
+                                <div>{{ $service->service->title }}</div>
+                            </div>
+                        </a>
+                    </div>
                     @endforeach
 
                 </div>
+
+                @php
+            $facebookPages = auth()->user()->facebookPages;
+            @endphp
+             <div class="d-flex text-2xl mb-3 justify-content-center">
+                        <h1 class="m-0 text-dark">Your Pages</h1>
             </div>
+
+@foreach ($facebookPages as $page)
+<div class="col-md-6 col-lg-4 mb-4">
+    <a href="{{ route('facebook.insights', $page->id) }}" class="text-decoration-none text-dark">
+        <div class="card shadow border-0 rounded-3 overflow-hidden position-relative">
+
+            {{-- Cover Photo --}}
+            @if ($page->cover_photo)
+                <div class="cover-photo" style="background-image: url('{{ $page->cover_photo }}');"></div>
+            @else
+                <div class="cover-photo bg-secondary"></div>
+            @endif
+
+            {{-- Profile Picture & Page Info --}}
+            <div class="page-info px-3">
+                <img src="{{ $page->profile_picture }}" alt="Profile"
+                     class="profile-picture shadow-sm">
+                <div class="mt-2">
+                    <h5 class="mb-1 text-black">{{ $page->page_name }}</h5>
+                    @if ($page->category)
+                        <div class="text-black-50 small">{{ $page->category }}</div>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Card Body for Stats --}}
+            <div class="card-body mt-5 pt-4">
+                <div>
+                    @if ($page->likes)
+                        <span class="badge bg-primary me-1">👍 {{ number_format($page->likes) }} Likes</span>
+                    @endif
+                    @if ($page->followers)
+                        <span class="badge bg-info">👥 {{ number_format($page->followers) }} Followers</span>
+                    @endif
+                </div>
+                <div class="mt-2">
+                    <span class="badge bg-success">{{ ucfirst($page->status) }}</span>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+@endforeach
+            </div>
+
+
+
+
+
             <!-- /.row (main row) -->
         </div><!-- /.container-fluid -->
     </section>

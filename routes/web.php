@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\FacebookPage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
@@ -18,31 +19,165 @@ use App\Http\Controllers\Customer\ProfileController as CustomerProfileController
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
-Route::get('/insights', function () {
-    $user = auth()->user();
-    $pageAccessToken = $user->fb_page_token;
-    $pageId = $user->fb_page_id;
+    Route::get('/insights/{id}', function () {
+        $id = request('id');
 
-    $response = Http::withToken($pageAccessToken)
-    ->get("https://graph.facebook.com/{$pageId}/posts", [
-        'fields' => 'id,message,created_time'
-    ]);
+        $page = FacebookPage::find($id);
+        if (!$page) {
+            return redirect()->back()->with('error', 'Page not found.');
+        }
 
-    $posts = $response->json()['data'];
+        $pageAccessToken = $page->page_access_token;
+        $pageId = $page->page_id;
 
-    $insights = [];
-    foreach ($posts as $post) {
-        $postId = $post['id'];
+        // Step 1: Get posts (basic data only)
+        $response = Http::withToken($pageAccessToken)
+            ->get("https://graph.facebook.com/{$pageId}/posts", [
+                'fields' => 'id,message,created_time',
+                'limit' => 5,
+            ]);
 
-        $insights[] = Http::withToken($pageAccessToken)
-            ->get("https://graph.facebook.com/{$postId}/insights",
-            [
-                'metric' => 'post_impressions'
-            ])
-            ->json();
-    }
-    return view('facebook.index', compact('posts', 'insights'));
-})->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
+        $posts = $response->json()['data'] ?? [];
+
+        $results = [];
+
+        // Step 2: Loop and fetch insights, likes, comments, shares per post
+        foreach ($posts as $post) {
+            $postId = $post['id'];
+
+            // Fetch insights
+            $insightResponse = Http::withToken($pageAccessToken)
+                ->get("https://graph.facebook.com/{$postId}/insights", [
+                    'metric' => 'post_impressions,post_engaged_users'
+                ]);
+
+            $insightData = $insightResponse->json()['data'] ?? [];
+
+            $reach = 0;
+            $engaged = 0;
+            foreach ($insightData as $item) {
+                if ($item['name'] === 'post_impressions') {
+                    $reach = $item['values'][0]['value'] ?? 0;
+                }
+                if ($item['name'] === 'post_engaged_users') {
+                    $engaged = $item['values'][0]['value'] ?? 0;
+                }
+            }
+
+            // Fetch likes/comments/shares
+            $metaResponse = Http::withToken($pageAccessToken)
+                ->get("https://graph.facebook.com/{$postId}", [
+                    'fields' => 'likes.summary(true),comments.summary(true),shares',
+                ]);
+
+            $meta = $metaResponse->json();
+
+            $results[] = [
+                'id' => $postId,
+                'message' => $post['message'] ?? '',
+                'created_time' => $post['created_time'],
+                'likes' => $meta['likes']['summary']['total_count'] ?? 0,
+                'comments' => $meta['comments']['summary']['total_count'] ?? 0,
+                'shares' => $meta['shares']['count'] ?? 0,
+                'reach' => $reach,
+                'engagement' => $engaged,
+            ];
+        }
+
+        return view('facebook.index', compact('results'));
+    })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
+
+    // Route::get('/insights/{id}', function () {
+    //     $id = request('id');
+
+    //     $page = FacebookPage::find($id);
+    //     if (!$page) {
+    //         return redirect()->back()->with('error', 'Page not found.');
+    //     }
+
+    //     $pageAccessToken = $page->page_access_token;
+    //     $pageId = $page->page_id;
+
+    //     // Get recent posts with reactions, comments, shares
+    //     $response = Http::withToken($pageAccessToken)
+    //         ->get("https://graph.facebook.com/{$pageId}/posts", [
+    //             'fields' => 'id,message,created_time,insights.metric(post_impressions,post_engaged_users),likes.summary(true),comments.summary(true),shares',
+    //             'limit' => 5, // adjust as needed
+    //         ]);
+
+    //     dd($response->json());
+
+    //     $posts = $response->json()['data'] ?? [];
+
+    //     $results = [];
+
+    //     foreach ($posts as $post) {
+    //         $likes = $post['likes']['summary']['total_count'] ?? 0;
+    //         $comments = $post['comments']['summary']['total_count'] ?? 0;
+    //         $shares = $post['shares']['count'] ?? 0;
+
+    //         // Insights (reach & engagement)
+    //         $reach = 0;
+    //         $engaged = 0;
+    //         if (isset($post['insights']['data'])) {
+    //             foreach ($post['insights']['data'] as $insight) {
+    //                 if ($insight['name'] === 'post_impressions') {
+    //                     $reach = $insight['values'][0]['value'] ?? 0;
+    //                 }
+    //                 if ($insight['name'] === 'post_engaged_users') {
+    //                     $engaged = $insight['values'][0]['value'] ?? 0;
+    //                 }
+    //             }
+    //         }
+
+    //         $results[] = [
+    //             'id' => $post['id'],
+    //             'message' => $post['message'] ?? '',
+    //             'created_time' => $post['created_time'],
+    //             'likes' => $likes,
+    //             'comments' => $comments,
+    //             'shares' => $shares,
+    //             'reach' => $reach,
+    //             'engagement' => $engaged,
+    //         ];
+    //     }
+    //     dd($results);
+
+    //     return view('facebook.index', compact('results'));
+    // })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
+
+
+// Route::get('/insights/{id}', function () {
+//     $id = request('id');
+
+//     $page = FacebookPage::find($id);
+//     if (!$page) {
+//         return redirect()->back()->with('error', 'Page not found.');
+//     }
+
+//     $pageAccessToken = $page->page_access_token;
+//     $pageId = $page->page_id;
+
+//     $response = Http::withToken($pageAccessToken)
+//     ->get("https://graph.facebook.com/{$pageId}/posts", [
+//         'fields' => 'id,message,created_time'
+//     ]);
+
+//     $posts = $response->json()['data'];
+
+//     $insights = [];
+//     foreach ($posts as $post) {
+//         $postId = $post['id'];
+
+//         $insights[] = Http::withToken($pageAccessToken)
+//             ->get("https://graph.facebook.com/{$postId}/insights",
+//             [
+//                 'metric' => 'post_impressions'
+//             ])
+//             ->json();
+//     }
+//     return view('facebook.index', compact('posts', 'insights'));
+// })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
 Route::get('/', function () {
     return view('welcome');
 });

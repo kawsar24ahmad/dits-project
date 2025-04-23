@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Exception;
 use App\Models\User;
+use App\Models\FacebookPage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -22,11 +23,11 @@ class FacebookController extends Controller
     {
         return Socialite::driver('facebook')
             ->scopes([
-                // 'email',
+                'email',
                 // 'user_posts',
                 'pages_show_list',
                 // 'pages_read_engagement',
-                // 'pages_read_user_content',
+                'pages_read_user_content',
                 // 'pages_manage_ads',
                 'read_insights',
                 'pages_read_engagement',
@@ -74,25 +75,53 @@ class FacebookController extends Controller
 
         Auth::login($user);
 
-        // Step 1: Get Pages
-    $pagesResponse = Http::withToken($facebookUser->token)
-    ->get('https://graph.facebook.com/v19.0/me/accounts');
-
-    $pages = $pagesResponse->json();
-
-    if (isset($pages['data'][0])) {
-        $pageId = $pages['data'][0]['id'];
-        $pageAccessToken = $pages['data'][0]['access_token'];
-
-        // Step 2: Save Page Info to User
-        $user->fb_page_id = $pageId;
-        $user->fb_page_token = $pageAccessToken;
-        $user->save();
-    } else {
-        return redirect()->route('login')->with('error', 'No Facebook pages found.');
-    }
+        // fetch user profile photo
+        $response = Http::withToken($facebookUser->token)
+            ->get('https://graph.facebook.com/v19.0/me?fields=picture.type(large)');
+        if ($response->successful()) {
+            $userData = $response->json();
+            $user->update([
+                'avatar' => $userData['picture']['data']['url'] ?? null,
+            ]);
+        }
 
 
-        return redirect()->route('user.dashboard')->with('success', 'You have successfully logged in with Facebook.');
+        // Fetch Pages
+        $pagesResponse = Http::withToken($facebookUser->token)
+            ->get('https://graph.facebook.com/v19.0/me/accounts?fields=id,name,username,category,access_token,picture,cover');
+
+        if ($pagesResponse->successful()) {
+            $pages = $pagesResponse->json()['data'] ?? [];
+
+            foreach ($pages as $page) {
+                $savedPage = FacebookPage::updateOrCreate(
+                    ['page_id' => $page['id']],
+                    [
+                        'user_id' => $user->id,
+                        'page_name' => $page['name'],
+                        'category' => $page['category'] ?? null,
+                        'page_access_token' => $page['access_token'],
+                        'profile_picture' => $page['picture']['data']['url'] ?? null,
+                        'cover_photo' => $page['cover']['source'] ?? null,
+                        'status' => 'active',
+                        'page_username' => $page['username'] ?? null,
+                        'likes' => $page['fan_count'] ?? null,
+                    ]
+                );
+
+                // Fetch followers count using the page token
+                $pageDetails = Http::withToken($page['access_token'])
+                    ->get("https://graph.facebook.com/{$page['id']}?fields=followers_count");
+
+                if ($pageDetails->successful()) {
+                    $followers = $pageDetails->json()['followers_count'] ?? null;
+                    $savedPage->update(['followers' => $followers]);
+                }
+            }
+
+
+
+            return redirect()->route('user.dashboard')->with('success', 'You have successfully logged in with Facebook.');
+        }
     }
 }
