@@ -44,10 +44,12 @@
                     @endphp
                     @foreach ($services as $service)
                         <div class="col">
-                            <div class="card text-center service-card p-3">
-                                <div class="rounded-icon text-primary mb-2">📢</div>
-                                <div>{{ $service->service->title }}</div>
-                            </div>
+                            <a href="{{ route('facebook.insights') }}">
+                                <div class="card text-center service-card p-3">
+                                    <div class="rounded-icon text-primary mb-2">📢</div>
+                                    <div>{{ $service->service->title }}</div>
+                                </div>
+                            </a>
                         </div>
                     @endforeach
 

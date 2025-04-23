@@ -22,12 +22,14 @@ class FacebookController extends Controller
     {
         return Socialite::driver('facebook')
             ->scopes([
-                'email',
-                // 'pages_show_list',
+                // 'email',
+                // 'user_posts',
+                'pages_show_list',
                 // 'pages_read_engagement',
                 // 'pages_read_user_content',
                 // 'pages_manage_ads',
-                // 'read_insights'
+                'read_insights',
+                'pages_read_engagement',
             ])
             ->redirect();
     }
@@ -72,16 +74,24 @@ class FacebookController extends Controller
 
         Auth::login($user);
 
-        // Page ID এবং Token সংগ্রহ
-        $response = Http::withToken($facebookUser->token)
-            ->get('https://graph.facebook.com/me/accounts');
-        $pages = $response->json();
+        // Step 1: Get Pages
+    $pagesResponse = Http::withToken($facebookUser->token)
+    ->get('https://graph.facebook.com/v19.0/me/accounts');
 
-        if (!empty($pages['data'])) {
-            $user->fb_page_id = $pages['data'][0]['id'];
-            $user->fb_page_token = $pages['data'][0]['access_token'];
-            $user->save();
-        }
+    $pages = $pagesResponse->json();
+
+    if (isset($pages['data'][0])) {
+        $pageId = $pages['data'][0]['id'];
+        $pageAccessToken = $pages['data'][0]['access_token'];
+
+        // Step 2: Save Page Info to User
+        $user->fb_page_id = $pageId;
+        $user->fb_page_token = $pageAccessToken;
+        $user->save();
+    } else {
+        return redirect()->route('login')->with('error', 'No Facebook pages found.');
+    }
+
 
         return redirect()->route('user.dashboard')->with('success', 'You have successfully logged in with Facebook.');
     }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
@@ -17,6 +18,31 @@ use App\Http\Controllers\Customer\ProfileController as CustomerProfileController
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
+Route::get('/insights', function () {
+    $user = auth()->user();
+    $pageAccessToken = $user->fb_page_token;
+    $pageId = $user->fb_page_id;
+
+    $response = Http::withToken($pageAccessToken)
+    ->get("https://graph.facebook.com/{$pageId}/posts", [
+        'fields' => 'id,message,created_time'
+    ]);
+
+    $posts = $response->json()['data'];
+
+    $insights = [];
+    foreach ($posts as $post) {
+        $postId = $post['id'];
+
+        $insights[] = Http::withToken($pageAccessToken)
+            ->get("https://graph.facebook.com/{$postId}/insights",
+            [
+                'metric' => 'post_impressions'
+            ])
+            ->json();
+    }
+    return view('facebook.index', compact('posts', 'insights'));
+})->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
 Route::get('/', function () {
     return view('welcome');
 });
