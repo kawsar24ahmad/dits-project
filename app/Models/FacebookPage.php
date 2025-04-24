@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\FacebookAd;
 use Illuminate\Database\Eloquent\Model;
 
 class FacebookPage extends Model
@@ -23,6 +24,10 @@ class FacebookPage extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function facebookAds()
+    {
+        return $this->hasMany(FacebookAd::class);
     }
 
 }

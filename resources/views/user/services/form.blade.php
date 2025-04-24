@@ -13,14 +13,14 @@
                     <h4 class="mb-0 mt-3 fw-bold">ফেসবুক অ্যাডস</h4>
                 </div>
                 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
                 <form action="{{ route('user.services.facebook_ad.buy') }}" method="POST" class="needs-validation" novalidate>
                     @csrf
@@ -30,6 +30,20 @@
                         <label class="form-label fw-semibold text-capitalize">Profile / Page Link</label>
                         <input type="text" name="page_link" class="form-control rounded-3" required>
                     </div>
+                    <div class="mb-3">
+                        @php
+                        $user = auth()->user();
+                        $pages = $user->facebookPages;
+                        @endphp
+                        <label for="facebookPageSelect" class="form-label fw-semibold text-capitalize">Select Your Page</label>
+                        <select name="facebook_page_id" id="facebookPageSelect" class="form-select">
+                            <option value="">Select Page</option>
+                            @foreach ($pages as $page)
+                            <option class="text-black" value="{{ $page->id }}">{{ $page->page_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
 
                     <div class="mb-3">
                         <label for="customRange1" class="form-label">Budget</label>
@@ -65,22 +79,32 @@
                         <input type="text" name="location" class="form-control rounded-3" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-capitalize">Button</label>
-                        <select name="button" class="form-select rounded-3" required>
-                            <option value="">Select</option>
-                            <option value="no_button">No Button</option>
-                            <option value="learn_more">Learn More</option>
-                            <option value="sign_up">Sign Up</option>
-                            <option value="send_message">Send Message (Messenger/WhatsApp)</option>
-                            <option value="call_now">Call Now</option>
-                        </select>
-                    </div>
+    <label class="form-label fw-semibold text-capitalize">Button</label>
+    <select name="button" id="buttonSelect" class="form-select rounded-3" required>
+        <option value="">Select</option>
+        <option value="no_button">No Button</option>
+        <option value="book_now">Book Now</option>
+        <option value="learn_more">Learn More</option>
+        <option value="shop_now">Shop Now</option> <!-- Added shop_now -->
+        <option value="sign_up">Sign Up</option>
+        <option value="send_message">Send Message (Messenger/WhatsApp)</option>
+        <option value="call_now">Call Now</option>
+    </select>
+</div>
 
+<div class="mb-3 d-none" id="urlDiv">
+    <label class="form-label fw-semibold">URL</label>
+    <input type="text" name="url" id="urlInput" class="form-control rounded-3" placeholder="https://example.com" required>
+</div>
+<div class="mb-3 d-none" id="phoneDiv">
+    <label class="form-label fw-semibold">Phone Number</label>
+    <input type="text" name="number" id="phoneInput" class="form-control rounded-3" placeholder="+8801XXXXXXXXX" required>
+</div>
 
                     <div class="mb-3">
                         <p class="form-label fw-semibold">Automatic message template</p>
                         <label class="form-label fw-semibold">Greeting</label>
-                        <textarea name="greeting" class="form-control rounded-3" rows="4" >{{ old('greeting', 'Hi, আসসালামু আলাইকুম! আগ্রহ প্রকাশ করার জন্য ধন্যবাদ...') }}</textarea>
+                        <textarea name="greeting" class="form-control rounded-3" rows="4">{{ old('greeting', 'Hi, আসসালামু আলাইকুম! আগ্রহ প্রকাশ করার জন্য ধন্যবাদ...') }}</textarea>
 
                     </div>
 
@@ -112,6 +136,46 @@
 
     rangeInput.addEventListener('input', function() {
         selectedValue.textContent = `$${this.value}`;
+    });
+
+    const buttonSelect = document.getElementById('buttonSelect');
+    const urlDiv = document.getElementById('urlDiv');
+    const phoneDiv = document.getElementById('phoneDiv');
+    const urlInput = document.getElementById('urlInput');
+    const phoneInput = document.getElementById('phoneInput');
+
+    buttonSelect.addEventListener('change', function() {
+        const val = this.value;
+
+        // Show URL input for these buttons
+        if (['book_now', 'learn_more', 'shop_now', 'sign_up'].includes(val)) {
+            urlDiv.classList.remove('d-none');
+            urlInput.required = true;
+        } else {
+            urlDiv.classList.add('d-none');
+            urlInput.required = false;
+            urlInput.value = '';
+        }
+
+        // Show phone number input for these buttons
+        if (['send_message', 'call_now'].includes(val)) {
+            phoneDiv.classList.remove('d-none');
+            phoneInput.required = true;
+        } else {
+            phoneDiv.classList.add('d-none');
+            phoneInput.required = false;
+            phoneInput.value = '';
+        }
+
+        // Hide both for no_button or empty selection
+        if (val === '' || val === 'no_button') {
+            urlDiv.classList.add('d-none');
+            phoneDiv.classList.add('d-none');
+            urlInput.required = false;
+            phoneInput.required = false;
+            urlInput.value = '';
+            phoneInput.value = '';
+        }
     });
 </script>
 @endsection

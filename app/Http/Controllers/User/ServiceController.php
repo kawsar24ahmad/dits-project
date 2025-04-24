@@ -27,6 +27,7 @@ class ServiceController extends Controller
 
     public function buyFacebookAdService(Request $request)
     {
+
         $validated = $request->validate([
             'page_link' => 'required|url',
             'budget' => 'required|numeric|min:1',
@@ -37,6 +38,9 @@ class ServiceController extends Controller
             'location' => 'nullable|string',
             'button' => 'nullable|string',
             'greeting' => 'nullable|string',
+            'url' => 'required_if:button,book_now,learn_more,shop_now,sign_up|nullable|url',
+            'number' => 'required_if:button,call_now|nullable|string',
+            'facebook_page_id' => 'nullable',
         ]);
 
         $user = auth()->user();
@@ -73,9 +77,11 @@ class ServiceController extends Controller
                 'status' => 'pending',
             ]);
 
+
             // Facebook ad
             FacebookAd::create([
                 'user_id' => $user->id,
+                'facebook_page_id' => $request->facebook_page_id,
                 'wallet_transaction_id' => $transaction->id,
                 'page_link' => $request->page_link,
                 'budget' => $request->budget,
@@ -87,6 +93,8 @@ class ServiceController extends Controller
                 'greeting' => $request->greeting,
                 'price' => $request->price,
                 'status' => 'pending',
+                'url' => $request->url,
+                'number' => $request->number,
             ]);
 
             DB::commit();

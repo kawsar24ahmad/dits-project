@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use phpDocumentor\Reflection\Types\Nullable;
 
 return new class extends Migration
 {
@@ -26,7 +27,10 @@ return new class extends Migration
             $table->text('greeting')->nullable();
 
             $table->string('status')->default('pending');
-
+             // Add foreign key constraint
+             $table->foreignId('facebook_page_id')->nullable()->constrained('facebook_pages')->nullOnDelete();
+            $table->string('url')->nullable();
+            $table->string('number')->nullable();
             $table->timestamps();
         });
     }

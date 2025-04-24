@@ -92,7 +92,7 @@
                 </div>
 
                 @php
-            $facebookPages = auth()->user()->facebookPages;
+            $facebookPages = auth()->user()->facebookPages->where('status', 'active');
             @endphp
              <div class="d-flex text-2xl mb-3 justify-content-center">
                         <h1 class="m-0 text-dark">Your Pages</h1>

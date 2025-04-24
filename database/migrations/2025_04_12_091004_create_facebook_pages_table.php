@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('page_access_token');
             $table->text('profile_picture')->nullable();
             $table->text('cover_photo')->nullable();
-            $table->string('status')->default('active');
+            $table->string('status')->default('pending');
             $table->string('page_username')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('followers')->nullable();

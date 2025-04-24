@@ -82,6 +82,12 @@
                         <p>Facebook Ads Orders</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.facebook-pages.index') }}" class="nav-link">
+                        <i class="nav-icon fab fa-facebook-f"></i>
+                        <p>Facebook Pages</p>
+                    </a>
+                </li>
 
 
             </ul>

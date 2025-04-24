@@ -10,22 +10,29 @@
         margin-bottom: 10px;
         border-radius: 5px;
     }
-    .form-field-row input, .form-field-row select {
+
+    .form-field-row input,
+    .form-field-row select {
         margin-bottom: 10px;
     }
+
     .remove-field {
         margin-top: 10px;
     }
+
     .add-field-btn-container {
         text-align: right;
         margin-top: 20px;
     }
+
     .form-group label {
         font-weight: 600;
     }
+
     .form-control {
         border-radius: 5px;
     }
+
     .btn {
         border-radius: 5px;
     }
@@ -62,15 +69,15 @@
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
-                            @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
 
                                 <div class="card-header">
                                     <h4 class="card-title">Edit Service</h4>
@@ -113,9 +120,9 @@
                                                     <select class="form-control select2" name="category_id">
                                                         <option value="">-- Select Category --</option>
                                                         @foreach($categories as $category)
-                                                            <option value="{{ $category->id }}" {{ $service->category_id == $category->id ? 'selected' : '' }}>
-                                                                {{ $category->title }}
-                                                            </option>
+                                                        <option value="{{ $category->id }}" {{ $service->category_id == $category->id ? 'selected' : '' }}>
+                                                            {{ $category->title }}
+                                                        </option>
                                                         @endforeach
                                                     </select>
                                                     @error('category_id') <small class="text-danger">{{ $message }}</small> @enderror
@@ -128,7 +135,7 @@
                                                     <label>Thumbnail</label>
                                                     <input type="file" name="thumbnail" class="form-control">
                                                     @if($service->thumbnail)
-                                                        <img src="{{ asset($service->thumbnail) }}" alt="Thumbnail" height="150" width="150" class="mt-1">
+                                                    <img src="{{ asset($service->thumbnail) }}" alt="Thumbnail" height="150" width="150" class="mt-1">
                                                     @endif
                                                     @error('thumbnail') <small class="text-danger">{{ $message }}</small> @enderror
                                                 </div>
@@ -153,54 +160,11 @@
                                             </div>
 
                                             {{-- Service Type --}}
+                                            <!-- Type -->
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label>Service Type</label>
-                                                    <select class="form-control" id="type" name="type" required>
-                                                        <option value="form" {{ old('type', $service->type) == 'form' ? 'selected' : '' }}>Form</option>
-                                                        <option value="view_only" {{ old('type', $service->type) == 'view_only' ? 'selected' : '' }}>View Only</option>
-                                                        <option value="external_link" {{ old('type', $service->type) == 'external_link' ? 'selected' : '' }}>External Link</option>
-                                                    </select>
-                                                    @error('type') <small class="text-danger">{{ $message }}</small> @enderror
-                                                </div>
-                                            </div>
-
-                                            {{-- Form Fields (only if type is 'form') --}}
-                                            <div class="col-md-12 {{ $service->type != 'form' ? 'd-none' : '' }}" id="form-fields">
-                                                <div class="form-group">
-                                                    <label>Form Fields</label>
-                                                    <div id="formFieldsContainer">
-                                                        @foreach(json_decode($service->form_fields_json, true) ?? [] as $index => $field)
-                                                            <div class="form-field-row" data-index="{{ $index }}">
-                                                                <input type="text" name="form_fields_json[{{ $index }}][name]" class="form-control mb-2" value="{{ $field['name'] }}" placeholder="Field Name" required>
-                                                                <select name="form_fields_json[{{ $index }}][type]" class="form-control mb-2" required>
-                                                                    <option value="text" {{ $field['type'] == 'text' ? 'selected' : '' }}>Text</option>
-                                                                    <option value="number" {{ $field['type'] == 'number' ? 'selected' : '' }}>Number</option>
-                                                                    <option value="email" {{ $field['type'] == 'email' ? 'selected' : '' }}>Email</option>
-                                                                </select>
-                                                                <button type="button" class="btn btn-danger remove-field">Remove Field</button>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="add-field-btn-container">
-                                                        <button type="button" class="btn btn-success" id="addFieldBtn">Add Field</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {{-- View Only --}}
-                                            <div class="col-md-12 mt-3 {{ $service->type != 'view_only' ? 'd-none' : '' }}" id="view-only-input">
-                                                <div class="form-group">
-                                                    <label>View Only Text</label>
-                                                    <input type="text" name="view_path" class="form-control" value="{{ old('view_path', $service->view_path) }}" placeholder="Enter view-only text">
-                                                </div>
-                                            </div>
-
-                                            {{-- External Link --}}
-                                            <div class="col-md-12 mt-3 {{ $service->type != 'external_link' ? 'd-none' : '' }}" id="external-link-input">
-                                                <div class="form-group">
-                                                    <label>External URL</label>
-                                                    <input type="url" name="external_link" class="form-control" value="{{ old('external_link', $service->external_link) }}" placeholder="https://example.com">
+                                                    <label>Type</label>
+                                                    <input type="text" value="{{ $service->type }}" name="type" class="form-control" value="{{ old('type') }}">
                                                 </div>
                                             </div>
 
@@ -228,43 +192,10 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('.select2').select2();
         $('.summernote').summernote({
             height: 200
-        });
-
-        $('#type').on('change', function () {
-            let val = $(this).val();
-            $('#form-fields, #view-only-input, #external-link-input').addClass('d-none');
-
-            if (val === 'form') {
-                $('#form-fields').removeClass('d-none');
-            } else if (val === 'view_only') {
-                $('#view-only-input').removeClass('d-none');
-            } else if (val === 'external_link') {
-                $('#external-link-input').removeClass('d-none');
-            }
-        }).trigger('change');
-
-        $('#addFieldBtn').click(function () {
-            let index = $('#formFieldsContainer').children().length;
-            let newFieldRow = `
-                <div class="form-field-row" data-index="${index}">
-                    <input type="text" name="form_fields_json[${index}][name]" class="form-control mb-2" placeholder="Field Name" required>
-                    <select name="form_fields_json[${index}][type]" class="form-control mb-2" required>
-                        <option value="text">Text</option>
-                        <option value="number">Number</option>
-                        <option value="email">Email</option>
-                    </select>
-                    <button type="button" class="btn btn-danger remove-field">Remove Field</button>
-                </div>
-            `;
-            $('#formFieldsContainer').append(newFieldRow);
-        });
-
-        $(document).on('click', '.remove-field', function () {
-            $(this).closest('.form-field-row').remove();
         });
     });
 </script>

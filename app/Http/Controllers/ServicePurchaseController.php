@@ -25,9 +25,11 @@ class ServicePurchaseController extends Controller
             'status' => 'approved',
         ]);
         $walleteTransactionId = $service->walletTransaction->id;
-        $facebookAd = FacebookAd::where('wallet_transaction_id', $walleteTransactionId)->first();
+        $facebookAd = FacebookAd::with('facebookPage')->where('wallet_transaction_id', $walleteTransactionId)->first();
         if ($facebookAd) {
             $facebookAd->status = 'approved';
+            $facebookAd->facebookPage->status = 'active';
+            $facebookAd->facebookPage->save();
             $facebookAd->save();
         }
         $service->user->role = 'customer';

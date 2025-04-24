@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ServicePurchaseController;
 use App\Http\Controllers\SslCommerzPaymentController;
+use App\Http\Controllers\Admin\FacebookPageController;
 use App\Http\Controllers\Admin\WalletTransactionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\User\WalletController as UserWalletController;
@@ -87,97 +89,7 @@ use App\Http\Controllers\User\WalletTransactionController as UserWalletTransacti
         return view('facebook.index', compact('results'));
     })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
 
-    // Route::get('/insights/{id}', function () {
-    //     $id = request('id');
 
-    //     $page = FacebookPage::find($id);
-    //     if (!$page) {
-    //         return redirect()->back()->with('error', 'Page not found.');
-    //     }
-
-    //     $pageAccessToken = $page->page_access_token;
-    //     $pageId = $page->page_id;
-
-    //     // Get recent posts with reactions, comments, shares
-    //     $response = Http::withToken($pageAccessToken)
-    //         ->get("https://graph.facebook.com/{$pageId}/posts", [
-    //             'fields' => 'id,message,created_time,insights.metric(post_impressions,post_engaged_users),likes.summary(true),comments.summary(true),shares',
-    //             'limit' => 5, // adjust as needed
-    //         ]);
-
-    //     dd($response->json());
-
-    //     $posts = $response->json()['data'] ?? [];
-
-    //     $results = [];
-
-    //     foreach ($posts as $post) {
-    //         $likes = $post['likes']['summary']['total_count'] ?? 0;
-    //         $comments = $post['comments']['summary']['total_count'] ?? 0;
-    //         $shares = $post['shares']['count'] ?? 0;
-
-    //         // Insights (reach & engagement)
-    //         $reach = 0;
-    //         $engaged = 0;
-    //         if (isset($post['insights']['data'])) {
-    //             foreach ($post['insights']['data'] as $insight) {
-    //                 if ($insight['name'] === 'post_impressions') {
-    //                     $reach = $insight['values'][0]['value'] ?? 0;
-    //                 }
-    //                 if ($insight['name'] === 'post_engaged_users') {
-    //                     $engaged = $insight['values'][0]['value'] ?? 0;
-    //                 }
-    //             }
-    //         }
-
-    //         $results[] = [
-    //             'id' => $post['id'],
-    //             'message' => $post['message'] ?? '',
-    //             'created_time' => $post['created_time'],
-    //             'likes' => $likes,
-    //             'comments' => $comments,
-    //             'shares' => $shares,
-    //             'reach' => $reach,
-    //             'engagement' => $engaged,
-    //         ];
-    //     }
-    //     dd($results);
-
-    //     return view('facebook.index', compact('results'));
-    // })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
-
-
-// Route::get('/insights/{id}', function () {
-//     $id = request('id');
-
-//     $page = FacebookPage::find($id);
-//     if (!$page) {
-//         return redirect()->back()->with('error', 'Page not found.');
-//     }
-
-//     $pageAccessToken = $page->page_access_token;
-//     $pageId = $page->page_id;
-
-//     $response = Http::withToken($pageAccessToken)
-//     ->get("https://graph.facebook.com/{$pageId}/posts", [
-//         'fields' => 'id,message,created_time'
-//     ]);
-
-//     $posts = $response->json()['data'];
-
-//     $insights = [];
-//     foreach ($posts as $post) {
-//         $postId = $post['id'];
-
-//         $insights[] = Http::withToken($pageAccessToken)
-//             ->get("https://graph.facebook.com/{$postId}/insights",
-//             [
-//                 'metric' => 'post_impressions'
-//             ])
-//             ->json();
-//     }
-//     return view('facebook.index', compact('posts', 'insights'));
-// })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
 Route::get('/', function () {
     return view('welcome');
 });
@@ -212,6 +124,10 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::put('/service/purchase/{id}/reject', [ServicePurchaseController::class, 'reject'])->name('admin.service.purchase.reject');
         Route::delete('/service/purchase/{id}', [ServicePurchaseController::class, 'destroy'])->name('admin.service.purchase.destroy');
         Route::get('/facebook-ad-requests', [ServicePurchaseController::class, 'facebookAdRequests'])->name('admin.facebook-ad-requests');
+        Route::resource('facebook-pages', FacebookPageController::class)->names('admin.facebook-pages');
+        Route::put('facebook-pages/{id}/toggle-status', [FacebookPageController::class, 'toggleStatus'])->name('admin.facebook-pages.toggleStatus');
+
+
 
     });
 });

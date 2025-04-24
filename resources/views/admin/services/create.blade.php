@@ -149,86 +149,8 @@
             tabsize: 2,
             height: 150
         });
-
-        $('#type').trigger('change');
     });
 
-    $('#type').on('change', function () {
-        let val = $(this).val();
-        $('#form-fields, #view-only-input, #external-link-input').addClass('d-none');
 
-        if (val === 'form') {
-            $('#form-fields').removeClass('d-none');
-        } else if (val === 'view_only') {
-            $('#view-only-input').removeClass('d-none');
-        } else if (val === 'external_link') {
-            $('#external-link-input').removeClass('d-none');
-        }
-    });
-
-    let fieldIndex = 1;
-function addField() {
-    $('#form-fields').append(`
-        <div class="form-field-item border p-3 rounded mb-3">
-            <div class="row g-2">
-                <div class="col-md-4">
-                    <label>Label</label>
-                    <input type="text" name="fields[${fieldIndex}][label]" class="form-control" placeholder="Label" required>
-                </div>
-                <div class="col-md-4">
-                    <label>Tag</label>
-                    <input type="text" name="fields[${fieldIndex}][tag]" class="form-control" placeholder="Tag name" required>
-                </div>
-                <div class="col-md-4">
-                    <label>Name</label>
-                    <input type="text" name="fields[${fieldIndex}][name]" class="form-control" placeholder="Input name" required>
-                </div>
-                <div class="col-md-4">
-                    <label>Placeholder</label>
-                    <input type="text" name="fields[${fieldIndex}][placeholder]" class="form-control" placeholder="Placeholder text" required>
-                </div>
-                <div class="col-md-4">
-                    <label>Type</label>
-                    <select name="fields[${fieldIndex}][type]" class="form-control" required>
-                        <option value="text">Text</option>
-                        <option value="email">Email</option>
-                        <option value="file">File</option>
-                        <option value="number">Number</option>
-                        <option value="ratio">Ratio</option>
-                    </select>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <div class="form-check">
-                        <input type="checkbox" name="fields[${fieldIndex}][required]" class="form-check-input" id="required_${fieldIndex}">
-                        <label class="form-check-label" for="required_${fieldIndex}">Required</label>
-                    </div>
-                </div>
-                <div class="col-md-2 d-flex align-items-end justify-content-end">
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeField(this)">Remove</button>
-                </div>
-            </div>
-        </div>
-    `);
-    fieldIndex++;
-}
-
-
-    function removeField(btn) {
-        $(btn).closest('.form-field-item').remove();
-    }
-
-    $('form').on('submit', function () {
-        const fields = [];
-        $('.form-field-item').each(function () {
-            fields.push({
-                label: $(this).find('[name$="[label]"]').val(),
-                name: $(this).find('[name$="[name]"]').val(),
-                type: $(this).find('[name$="[type]"]').val(),
-                required: $(this).find('[name$="[required]"]').is(':checked')
-            });
-        });
-
-        $('#form_fields_json').val(JSON.stringify(fields));
-    });
 </script>
 @endsection

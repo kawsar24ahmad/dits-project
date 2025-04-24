@@ -42,7 +42,8 @@
                                                 <tr>
                                                     <th>SL</th>
                                                     <th>User id</th>
-                                                    <th>Service id</th>
+                                                    <th>Service</th>
+                                                    <th>Facebook Page</th>
                                                     <th> Price</th>
                                                     <th>Wallet Transaction id</th>
                                                     <th>Transaction id</th>
@@ -58,6 +59,9 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $service->user_id }}</td>
                                                     <td>{{ $service->service->title }}</td>
+
+                                                    <td>{{ $service->walletTransaction?->facebookAd?->facebookPage?->page_name }}</td>
+
                                                     <td>{{ $service->price }}</td>
                                                     <td>{{ $service->walletTransaction->id }}</td>
                                                     <td>{{ $service->walletTransaction->transaction_id }}</td>
