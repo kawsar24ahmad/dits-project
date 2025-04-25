@@ -16,8 +16,19 @@ class CheckRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = auth()->user();
-        if ( !$user || !in_array($user->role, $roles)) {
-            return abort(403, 'You do not have access to this section');
+        if ( !$user ) {
+           return redirect()->route('login');
+        }
+        if (!in_array($user->role, $roles)) {
+            switch ($user->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard');
+                case 'user':
+                case 'customer':
+                    return redirect()->route('user.dashboard');
+                default:
+                    return  redirect()->route($user->role .'.dashboard'); // Forbidden for unknown roles
+            }
         }
         return $next($request);
     }
