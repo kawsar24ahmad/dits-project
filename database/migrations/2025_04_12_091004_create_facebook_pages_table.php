@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('page_username')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('followers')->nullable();
-
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -18,16 +18,16 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('icon')->nullable()->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
-
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
             $table->string('type')->nullable();
-
             // Optional FK constraint if 'categories' table exists
             $table->foreign('category_id')
                   ->references('id')
                   ->on('categories')
                   ->nullOnDelete();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+
         });
     }
 

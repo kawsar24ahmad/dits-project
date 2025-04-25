@@ -30,7 +30,7 @@
         <div class="row">
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-warning">
               <div class="inner">
                 @php
                     $totalOrders = \App\Models\FacebookAd::where('status', 'pending')->count();
@@ -38,6 +38,48 @@
                 <h3>{{ $totalOrders }}</h3>
 
                 <p>New FacebookAd Orders</p>
+
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="{{ route('admin.service.purchases') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+                @php
+                    $totalRechargeOrders = \App\Models\WalletTransaction::where([
+                        'status'=> 'pending',
+                        'type' => 'recharge'
+                    ])->count();
+                @endphp
+                <h3>{{ $totalRechargeOrders }}</h3>
+
+                <p>Recharge Orders</p>
+
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="{{ route('admin.wallet.transactions') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                @php
+                    $total = \App\Models\ServicePurchase::where([
+                        'status'=> 'approved'
+                    ])->count();
+                @endphp
+                <h3>{{ $total }}</h3>
+
+                <p>Total Purchased Service</p>
 
               </div>
               <div class="icon">
@@ -101,7 +143,7 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-warning">
+            <div class="small-box bg-info">
               <div class="inner">
                 @php
                     $userCount = \App\Models\User::count();
@@ -119,7 +161,7 @@
           <!-- ./col -->
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-danger">
+            <div class="small-box bg-info">
               <div class="inner">
                <!-- unique Visitors -->
                 @php
@@ -135,6 +177,68 @@
                 <i class="ion ion-pie-graph"></i>
               </div>
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+               <!-- unique Visitors -->
+                @php
+                    $total = \App\Models\FacebookPage::where('status', 'active')->count();
+                @endphp
+                <h3>{{ $total }}</h3>
+                <!-- unique Visitors -->
+
+
+                <p>Active Facebook Pages</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="{{ route('admin.facebook-pages.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+               <!-- unique Visitors -->
+                @php
+                    $total = \App\Models\FacebookAd::where('status', 'approved')->count();
+                @endphp
+                <h3>{{ $total }}</h3>
+                <!-- unique Visitors -->
+
+
+                <p>Active Facebook Ads Requests</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="{{ route('admin.facebook-ad-requests') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-danger">
+              <div class="inner">
+               <!-- unique Visitors -->
+                @php
+                    $total = \App\Models\WalletTransaction::where([
+                        'status'=> 'pending',
+                        'type' => 'payment'
+                    ])->sum('amount');
+                @endphp
+                <h3>{{ $total }}</h3>
+                <!-- unique Visitors -->
+                <p>Pending Payment</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="{{ route('admin.wallet.transactions') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->

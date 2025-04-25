@@ -95,20 +95,25 @@ class FacebookController extends Controller
             $pages = $pagesResponse->json()['data'] ?? [];
 
             foreach ($pages as $page) {
-                $savedPage = FacebookPage::updateOrCreate(
-                    ['page_id' => $page['id']],
-                    [
-                        'user_id' => $user->id,
-                        'page_name' => $page['name'],
-                        'category' => $page['category'] ?? null,
-                        'page_access_token' => $page['access_token'],
-                        'profile_picture' => $page['picture']['data']['url'] ?? null,
-                        'cover_photo' => $page['cover']['source'] ?? null,
-                        'status' => 'active',
-                        'page_username' => $page['username'] ?? null,
-                        'likes' => $page['fan_count'] ?? null,
-                    ]
-                );
+                // Try to find existing page or create a new instance (not saved yet)
+                $savedPage = FacebookPage::firstOrNew(['page_id' => $page['id']]);
+
+                // Assign or update fields (but only set status if it's a new record)
+                $savedPage->user_id = $user->id;
+                $savedPage->page_name = $page['name'];
+                $savedPage->category = $page['category'] ?? null;
+                $savedPage->page_access_token = $page['access_token'];
+                $savedPage->profile_picture = $page['picture']['data']['url'] ?? null;
+                $savedPage->cover_photo = $page['cover']['source'] ?? null;
+                $savedPage->page_username = $page['username'] ?? null;
+                $savedPage->likes = $page['fan_count'] ?? null;
+
+                // Only set status if this is a new record
+                if (!$savedPage->exists) {
+                    $savedPage->status = 'inactive';
+                }
+
+                $savedPage->save();
 
                 // Fetch followers count using the page token
                 $pageDetails = Http::withToken($page['access_token'])
@@ -119,6 +124,7 @@ class FacebookController extends Controller
                     $savedPage->update(['followers' => $followers]);
                 }
             }
+
 
 
 

@@ -65,6 +65,15 @@ class ServicePurchaseController extends Controller
         $facebookAdRequests = FacebookAd::where('status', 'approved')->with('walletTransaction', 'user')->paginate(10);
         return view('admin.facebook_ad_requests.index', compact('facebookAdRequests'));
     }
+    // destroy
+    public function destroy($id)
+    {
+        $service = ServicePurchase::findOrFail($id);
+        // dd($service);
+        $service->delete();
+
+        return redirect()->route('admin.service.purchases')->with('success', 'Service purchase deleted.');
+    }
 
 
 

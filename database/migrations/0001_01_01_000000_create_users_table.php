@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('provider')->nullable(); // e.g., 'google', 'facebook'
             $table->string('provider_id')->nullable(); // e.g., Google or Facebook ID
             $table->string('fb_access_token', 500)->nullable();
-            $table->string('fb_page_id')->nullable();
-            $table->string('fb_page_token',500)->nullable();
             $table->enum('role', ['admin', 'user', 'customer'])->default('user');
             $table->string("avatar")->nullable();
             $table->string("phone")->nullable();
@@ -29,6 +27,7 @@ return new class extends Migration
             $table->decimal('wallet_balance', 10, 2)->default(.00);
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

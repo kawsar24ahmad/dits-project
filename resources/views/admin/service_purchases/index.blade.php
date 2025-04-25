@@ -85,26 +85,22 @@
                                                     </td>
                                                     <td>{{ $service->approved_at }}</td>
                                                     <td>
-
-                                                        <form action="{{ route('admin.service.purchase.approve', $service->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to approve this purchase?');">
+                                                       @if ($service->status == 'pending' )
+                                                       <form action="{{ route('admin.service.purchase.approve', $service->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to approve this purchase?');">
                                                             @csrf
                                                             @method('PUT')
                                                             <button type="submit" class="btn btn-success btn-sm">Approve</button>
                                                         </form>
+                                                       @endif
 
+
+                                                        @if ($service->status == 'pending')
                                                         <form action="{{ route('admin.service.purchase.reject', $service->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to reject this purchase?');">
                                                             @csrf
                                                             @method('PUT')
                                                             <button type="submit" class="btn btn-danger btn-sm">Reject</button>
                                                         </form>
-
-                                                        <form action="{{ route('admin.service.purchase.destroy', $service->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure to delete this service?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-link text-danger p-0 m-0 align-baseline" title="Delete">
-                                                                <i class="fa fa-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                                 @endforeach

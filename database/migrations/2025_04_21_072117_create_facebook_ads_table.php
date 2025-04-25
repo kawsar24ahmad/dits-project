@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('url')->nullable();
             $table->string('number')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
