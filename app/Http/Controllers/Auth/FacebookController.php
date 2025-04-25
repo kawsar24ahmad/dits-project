@@ -24,13 +24,14 @@ class FacebookController extends Controller
         return Socialite::driver('facebook')
             ->scopes([
                 'email',
-                // 'user_posts',
                 'pages_show_list',
-                // 'pages_read_engagement',
-                'pages_read_user_content',
-                // 'pages_manage_ads',
-                'read_insights',
                 'pages_read_engagement',
+                'pages_read_user_content',
+                'read_insights',
+                'pages_manage_posts',
+                // 'user_posts',
+                // 'pages_read_engagement',
+                // 'pages_manage_ads',
             ])
             ->redirect();
     }

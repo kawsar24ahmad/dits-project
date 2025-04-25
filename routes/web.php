@@ -18,76 +18,12 @@ use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\ServiceController as UserServiceController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\Customer\FacebookController as CustomerFacebookController;
 use App\Http\Controllers\User\WalletTransactionController as UserWalletTransactionController;
 
 
-    Route::get('/insights/{id}', function () {
-        $id = request('id');
 
-        $page = FacebookPage::find($id);
-        if (!$page) {
-            return redirect()->back()->with('error', 'Page not found.');
-        }
 
-        $pageAccessToken = $page->page_access_token;
-        $pageId = $page->page_id;
-
-        // Step 1: Get posts (basic data only)
-        $response = Http::withToken($pageAccessToken)
-            ->get("https://graph.facebook.com/{$pageId}/posts", [
-                'fields' => 'id,message,created_time',
-                'limit' => 5,
-            ]);
-
-        $posts = $response->json()['data'] ?? [];
-
-        $results = [];
-
-        // Step 2: Loop and fetch insights, likes, comments, shares per post
-        foreach ($posts as $post) {
-            $postId = $post['id'];
-
-            // Fetch insights
-            $insightResponse = Http::withToken($pageAccessToken)
-                ->get("https://graph.facebook.com/{$postId}/insights", [
-                    'metric' => 'post_impressions,post_engaged_users'
-                ]);
-
-            $insightData = $insightResponse->json()['data'] ?? [];
-
-            $reach = 0;
-            $engaged = 0;
-            foreach ($insightData as $item) {
-                if ($item['name'] === 'post_impressions') {
-                    $reach = $item['values'][0]['value'] ?? 0;
-                }
-                if ($item['name'] === 'post_engaged_users') {
-                    $engaged = $item['values'][0]['value'] ?? 0;
-                }
-            }
-
-            // Fetch likes/comments/shares
-            $metaResponse = Http::withToken($pageAccessToken)
-                ->get("https://graph.facebook.com/{$postId}", [
-                    'fields' => 'likes.summary(true),comments.summary(true),shares',
-                ]);
-
-            $meta = $metaResponse->json();
-
-            $results[] = [
-                'id' => $postId,
-                'message' => $post['message'] ?? '',
-                'created_time' => $post['created_time'],
-                'likes' => $meta['likes']['summary']['total_count'] ?? 0,
-                'comments' => $meta['comments']['summary']['total_count'] ?? 0,
-                'shares' => $meta['shares']['count'] ?? 0,
-                'reach' => $reach,
-                'engagement' => $engaged,
-            ];
-        }
-
-        return view('facebook.index', compact('results'));
-    })->middleware(['auth', 'role:user,customer'])->name('facebook.insights');
 
 
 Route::get('/', function () {
@@ -153,6 +89,8 @@ Route::middleware([ 'auth','role:customer'])->group(function ()  {
         Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
         Route::patch('/profile/changePhoto', [CustomerProfileController::class, 'changePhoto'])->name('customer.profile.changePhoto');
         Route::delete('/profile', [CustomerProfileController::class, 'destroy'])->name('customer.profile.destroy');
+        Route::get('/videos/{id}', [CustomerFacebookController::class, 'videos'])->name('facebook.videos');
+        Route::get('/posts/{id}', [CustomerFacebookController::class, 'posts'])->name('facebook.posts');
     });
 
 });

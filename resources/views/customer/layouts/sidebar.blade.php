@@ -2,10 +2,10 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{URL::to('/')}}" class="brand-link d-flex justify-content-center align-items-center">
+    <a  href="{{URL::to('/')}}" class="brand-link d-flex justify-content-center align-items-center">
         <!-- <img src="{{asset('backend/dist/img/AdminLTELogo.png')}}" alt="VGD Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8"> -->
-        <span class="h4 fw-bold text-primary">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
+        <span class="h4 fw-bold text-white">{{ strtoupper(config('app.name', 'Laravel')) }}</span>
     </a>
 
     <!-- Sidebar -->

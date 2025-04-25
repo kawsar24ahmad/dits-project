@@ -28,7 +28,8 @@
         background: white;
     }
 
-    .card h5, .card .small {
+    .card h5,
+    .card .small {
         margin: 0;
     }
 </style>
@@ -69,77 +70,85 @@
 
             <!-- Main row -->
             <div class="row">
-                <h5 class="mb-3">Your Services</h5>
-                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4 justify-content-center">
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4 ">
 
                     @php
-                    $services = App\Models\ServicePurchase::with('service')->where([
+                    $serviceCount = App\Models\ServicePurchase::with('service')->where([
                     'user_id'=> auth()->id(),
                     'status' => 'approved'
-                    ])->get();
+                    ])->count();
                     @endphp
-                    @foreach ($services as $service)
-                    <div class="col">
-                        <a href="{{ route('facebook.insights','4') }}">
-                            <div class="card text-center service-card p-3">
-                                <div class="rounded-icon text-primary mb-2">📢</div>
-                                <div>{{ $service->service->title }}</div>
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+
+                                <h3>{{ $serviceCount }}</h3>
+
+                                <p>Active Service</p>
                             </div>
-                        </a>
+                            <div class="icon">
+                                <i class="ion ion-ios-settings"></i>
+                            </div>
+
+
+                        </div>
                     </div>
-                    @endforeach
 
                 </div>
 
                 @php
-            $facebookPages = auth()->user()->facebookPages->where('status', 'active');
-            @endphp
-             <div class="d-flex text-2xl mb-3 justify-content-center">
-                        <h1 class="m-0 text-dark">Your Pages</h1>
-            </div>
-
-@foreach ($facebookPages as $page)
-<div class="col-md-6 col-lg-4 mb-4">
-    <a href="{{ route('facebook.insights', $page->id) }}" class="text-decoration-none text-dark">
-        <div class="card shadow border-0 rounded-3 overflow-hidden position-relative">
-
-            {{-- Cover Photo --}}
-            @if ($page->cover_photo)
-                <div class="cover-photo" style="background-image: url('{{ $page->cover_photo }}');"></div>
-            @else
-                <div class="cover-photo bg-secondary"></div>
-            @endif
-
-            {{-- Profile Picture & Page Info --}}
-            <div class="page-info px-3">
-                <img src="{{ $page->profile_picture }}" alt="Profile"
-                     class="profile-picture shadow-sm">
-                <div class="mt-2">
-                    <h5 class="mb-1 text-black">{{ $page->page_name }}</h5>
-                    @if ($page->category)
-                        <div class="text-black-50 small">{{ $page->category }}</div>
-                    @endif
+                $facebookPages = auth()->user()->facebookPages->where('status', 'active');
+                @endphp
+                <div class="d-flex text-2xl mb-3 justify-content-center">
+                    <h1 class="m-0 text-dark">Your Pages</h1>
                 </div>
-            </div>
 
-            {{-- Card Body for Stats --}}
-            <div class="card-body mt-5 pt-4">
-                <div>
-                    @if ($page->likes)
-                        <span class="badge bg-primary me-1">👍 {{ number_format($page->likes) }} Likes</span>
-                    @endif
-                    @if ($page->followers)
-                        <span class="badge bg-info">👥 {{ number_format($page->followers) }} Followers</span>
-                    @endif
+                @foreach ($facebookPages as $page)
+                <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card shadow border-0 rounded-3 overflow-hidden position-relative">
+
+                            {{-- Cover Photo --}}
+                            @if ($page->cover_photo)
+                            <div class="cover-photo" style="background-image: url('{{ $page->cover_photo }}');"></div>
+                            @else
+                            <div class="cover-photo bg-secondary"></div>
+                            @endif
+
+                            {{-- Profile Picture & Page Info --}}
+                            <div class="page-info px-3">
+                                <img src="{{ $page->profile_picture }}" alt="Profile"
+                                    class="profile-picture shadow-sm">
+                                <div class="mt-2">
+                                    <h5 class="mb-1 text-black">{{ $page->page_name }}</h5>
+                                    @if ($page->category)
+                                    <div class="text-black-50 small">{{ $page->category }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Card Body for Stats --}}
+                            <div class="card-body mt-5 pt-4">
+                                <div>
+                                    @if ($page->likes)
+                                    <span class="badge bg-primary me-1">👍 {{ number_format($page->likes) }} Likes</span>
+                                    @endif
+                                    @if ($page->followers)
+                                    <span class="badge bg-info">👥 {{ number_format($page->followers) }} Followers</span>
+                                    @endif
+                                </div>
+                                <div class="mt-2 d-flex justify-content-between">
+                                    <span class="badge bg-success">{{ ucfirst($page->status) }}</span>
+                                    <div class="gap-1 d-flex">
+                                        <a class="badge badge-primary" href="{{ route('facebook.posts', $page->id) }}">Posts</a>
+                                        <a class="badge badge-danger" href="{{ route('facebook.videos', $page->id) }}">Videos</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                 </div>
-                <div class="mt-2">
-                    <span class="badge bg-success">{{ ucfirst($page->status) }}</span>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>
-@endforeach
+                @endforeach
             </div>
 
 
