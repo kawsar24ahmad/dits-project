@@ -49,6 +49,9 @@
                                                     <th>Location</th>
                                                     <th>Age Range</th>
                                                     <th>Button</th>
+                                                    <th>URL</th>
+                                                    <th>Phone Number</th>
+                                                    <th>Greeting Message</th>
                                                     <th>Status</th>
                                                     <th>Payment Amount</th>
                                                     <th>Purchase Date</th>
@@ -61,11 +64,16 @@
                                                     <td>{{ $facebookAdRequest->user->name ?? 'N/A' }}<br><small>{{ $facebookAdRequest->user->email ?? '' }}</small></td>
                                                     <td>{{ $facebookAdRequest->user->fb_access_token }}</td>
                                                     <td><a href="{{ $facebookAdRequest->page_link }}" target="_blank">{{ Str::limit($facebookAdRequest->page_link, 30) }}</a></td>
-                                                    <td>{{ number_format($facebookAdRequest->budget, 2) }}৳</td>
+                                                    <td>${{ number_format($facebookAdRequest->budget, 2) }}</td>
                                                     <td>{{ $facebookAdRequest->duration }} days</td>
                                                     <td>{{ $facebookAdRequest->location }}</td>
                                                     <td>{{ $facebookAdRequest->min_age }} - {{ $facebookAdRequest->max_age }}</td>
+
                                                     <td>{{ ucfirst(str_replace('_', ' ', $facebookAdRequest->button)) }}</td>
+
+                                                    <td>{{ $facebookAdRequest->url ?? "N/A" }}</td>
+                                                    <td>{{ $facebookAdRequest->number ?? "N/A" }}</td>
+                                                    <td>{{ $facebookAdRequest->greeting }}</td>
                                                     <td><span class="badge badge-{{ $facebookAdRequest->status == 'approved' ? 'success' : 'warning' }}">{{ ucfirst($facebookAdRequest->status) }}</span></td>
                                                     <td>{{ $facebookAdRequest->walletTransaction->amount ?? 'N/A' }}৳</td>
                                                     <td>{{ $facebookAdRequest->created_at->format('d M, Y') }}</td>

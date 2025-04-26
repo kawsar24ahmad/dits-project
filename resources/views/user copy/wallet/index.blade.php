@@ -41,9 +41,6 @@
                             <strong>💳 Manual Recharge</strong>
                         </div>
                         <div class="card-body">
-                            @php
-                            $settings = App\Models\SiteSetting::first();
-                            @endphp
 
                             @if(session('success'))
                             <div class="alert alert-success">{{ session('success') }}</div>
@@ -51,12 +48,12 @@
 
                             <p><strong>📢 Send money to this number:</strong></p>
                             <ul class="mb-3">
-                                <li><strong>Bkash:</strong> {{ $settings->bkash_account_no ?? '01YYYYYYYYY' }} ({{ $settings->bkash_type ?? '' }})</li>
-                                <li><strong>Nagad:</strong> {{ $settings->bkash_account_no ?? '01YYYYYYYYY' }} ({{ $settings->bkash_type ?? '' }})</li>
-                                <li><strong>Bank:</strong> {{ $settings->bank_name ?? 'N/A' }}<br>
-                                    Account Name: {{ $settings->account_name ?? 'N/A' }}<br>
-                                    Account No:  {{ $settings->bank_account_no ?? 'N/A' }}<br>
-                                    Branch:  {{ $settings->bank_branch ?? 'N/A' }}
+                                <li><strong>Bkash:</strong> 01XXXXXXXXX (Personal)</li>
+                                <li><strong>Nagad:</strong> 01YYYYYYYYY (Personal)</li>
+                                <li><strong>Bank:</strong> Islami Bank Bangladesh Ltd<br>
+                                    Account Name: DITS IT Ltd<br>
+                                    Account No: 1234567890123<br>
+                                    Branch: Mohammadpur Branch
                                 </li>
                             </ul>
                             <p class="text-muted">✅ Send the amount first, then fill up this form for approval:</p>

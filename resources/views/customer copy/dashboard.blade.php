@@ -70,7 +70,32 @@
 
             <!-- Main row -->
             <div class="row">
+                <div class="row row-cols-2 row-cols-md-4 g-3 mb-4 ">
 
+                    @php
+                    $serviceCount = App\Models\ServicePurchase::with('service')->where([
+                    'user_id'=> auth()->id(),
+                    'status' => 'approved'
+                    ])->count();
+                    @endphp
+                    <div class="col-lg-3 col-6">
+                        <!-- small box -->
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+
+                                <h3>{{ $serviceCount }}</h3>
+
+                                <p>Active Service</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ion ion-ios-settings"></i>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
 
                 @php
                 $facebookPages = auth()->user()->facebookPages->where('status', 'active');

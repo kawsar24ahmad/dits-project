@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ServicePurchaseController;
@@ -27,8 +28,19 @@ use App\Http\Controllers\User\WalletTransactionController as UserWalletTransacti
 
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        $role = auth()->user()->role;
+
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } elseif (in_array($role, ['user', 'customer'])) {
+            return redirect()->route('user.dashboard');
+        }
+    }
+
+    return redirect()->route('login'); // or login page
 });
+
 
 
 
@@ -63,6 +75,8 @@ Route::middleware(['auth', 'role:admin'])->group(function ()  {
         Route::resource('facebook-pages', FacebookPageController::class)->names('admin.facebook-pages');
         Route::put('facebook-pages/{id}/toggle-status', [FacebookPageController::class, 'toggleStatus'])->name('admin.facebook-pages.toggleStatus');
 
+        Route::get('/site-settings', [SettingController::class, 'edit'])->name('admin.site-settings.edit');
+        Route::post('/site-settings', [SettingController::class, 'update'])->name('admin.site-settings.update');
 
 
     });

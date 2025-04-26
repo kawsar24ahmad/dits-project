@@ -26,4 +26,5 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
     }
+    public const HOME = '/redirect-by-role';
 }

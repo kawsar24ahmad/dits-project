@@ -24,14 +24,22 @@ class ServicePurchaseController extends Controller
         $service->walletTransaction()->update([
             'status' => 'approved',
         ]);
-        $walleteTransactionId = $service->walletTransaction->id;
-        $facebookAd = FacebookAd::with('facebookPage')->where('wallet_transaction_id', $walleteTransactionId)->first();
+        $walletTransaction = $service->walletTransaction()->first(); // re-fetch it
+        $walletTransactionId = $walletTransaction?->id;
+
+        $facebookAd = FacebookAd::with('facebookPage')->where('wallet_transaction_id', $walletTransactionId)->first();
+
         if ($facebookAd) {
             $facebookAd->status = 'approved';
-            $facebookAd->facebookPage->status = 'active';
-            $facebookAd->facebookPage->save();
             $facebookAd->save();
+
+            $facebookPage = $facebookAd->facebookPage;
+            if ($facebookPage) {
+                $facebookPage->status = 'active';
+                $facebookPage->save();
+            }
         }
+
         $service->user->role = 'customer';
         $service->user->save();
         $service->save();
